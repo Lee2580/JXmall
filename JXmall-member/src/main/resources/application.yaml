@@ -10,6 +10,13 @@ spring:
     username: lee
     password: li15854198694
 
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.79.10:8848
+  application:
+    name: jxmall-member
+
 mybatis-plus:
   # sql映射文件
   mapper-locations: classpath:/mapper/**/*.xml

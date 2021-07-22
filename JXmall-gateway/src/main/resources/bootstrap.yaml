@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: jxmall-gateway
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.79.10:8848
+        namespace: 782cfd71-1a06-4ee5-8df8-286429f48128
+        shared-configs:
+          # 配置文件名-Data Id
+          - data-id: jxmall-gateway.yaml
+            # 默认为DEFAULT_GROUP
+            group: dev
+            # 是否动态刷新，默认为false
+            refresh: true

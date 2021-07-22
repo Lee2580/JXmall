@@ -18,6 +18,7 @@
         <module>renren-fast</module>
         <module>renren-generator</module>
         <module>JXmall-common</module>
+        <module>JXmall-gateway</module>
     </modules>
 
 
