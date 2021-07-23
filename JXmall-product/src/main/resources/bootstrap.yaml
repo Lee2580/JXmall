@@ -1,9 +1,8 @@
 spring:
   application:
-    name: jxmall-gateway
+    name: jxmall-product
   cloud:
     nacos:
       config:
         server-addr: 192.168.79.10:8848
-
-
+        namespace: d3c90bc0-7318-49df-8f76-7641798eb9f9

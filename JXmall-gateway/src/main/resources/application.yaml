@@ -18,3 +18,24 @@ spring:
           predicates:
             - Query=url,qq
 
+        # 前端项目都带上api前缀
+        # localhost:88/api/captcha.jpg ==> localhost8080/renren-fast/api/captcha.jpg
+
+        # 精确路由放到高优先级
+        # 商品服务
+        - id: product_route
+          uri: lb://jxmall-product
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        # 保护路由放到低优先级
+        - id: admin_route
+          uri: lb://renren-fast
+          predicates:
+            - Path=/api/**
+          # 路径重写
+          filters:
+            - RewritePath=/api/(?<segment>.*), /renren-fast/$\{segment}
+

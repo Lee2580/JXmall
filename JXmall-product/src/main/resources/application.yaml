@@ -10,6 +10,13 @@ spring:
     username: lee
     password: li15854198694
 
+  application:
+    name: jxmall-product
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.79.10:8848
+
 mybatis-plus:
   # sql映射文件
   mapper-locations: classpath:/mapper/**/*.xml
@@ -17,3 +24,7 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+      # 逻辑已删除值(默认为 1)
+      logic-delete-value: 1
+      # 逻辑未删除值(默认为 0)
+      logic-not-delete-value: 0
