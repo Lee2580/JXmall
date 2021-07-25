@@ -9,11 +9,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 /**
  * 商品三级分类
- * 
+ *
  * @author lee
  * @email 1114862851@qq.com
  * @date 2021-07-21 13:31:06
@@ -66,7 +67,9 @@ public class CategoryEntity implements Serializable {
 	/**
 	 *	子分类
 	 * 	该注解表示表里没有这个属性
+	 * 	@JsonInclude 不为空时返回的json才带该字段
 	 */
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	@TableField(exist = false)
 	private List<CategoryEntity> children;
 }
