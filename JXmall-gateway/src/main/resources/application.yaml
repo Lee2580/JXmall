@@ -30,6 +30,14 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
+        # 第三方服务
+        - id: third_party_route
+          uri: lb://jxmall-third-party
+          predicates:
+            - Path=/api/thirdparty/**
+          filters:
+            - RewritePath=/api/thirdparty/(?<segment>/?.*),/$\{segment}
+
         # 保护路由放到低优先级
         - id: admin_route
           uri: lb://renren-fast
@@ -38,4 +46,5 @@ spring:
           # 路径重写
           filters:
             - RewritePath=/api/(?<segment>.*), /renren-fast/$\{segment}
+
 

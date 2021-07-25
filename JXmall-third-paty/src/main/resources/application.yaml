@@ -1,0 +1,16 @@
+server:
+  port: 7500
+
+spring:
+  application:
+    name: jxmall-third-party
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.79.10:8848
+    alicloud:
+      access-key: LTAI5t6wJkdRcNLopJhjiLpZ
+      secret-key: KwltBcojsoKvPvR93k1aM0VpjGbkyu
+      oss:
+        endpoint: oss-cn-qingdao.aliyuncs.com
+        bucket: jxmall-lee

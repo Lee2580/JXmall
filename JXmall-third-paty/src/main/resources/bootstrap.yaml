@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: jxmall-third-party
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.79.10:8848
+        namespace: b51ab4d6-15c9-41bf-bff1-16b872aeb1b8
+        extension-configs:
+          - dataId: oss.yaml
+            group: DEFAULT_GROUP
+            refresh: true

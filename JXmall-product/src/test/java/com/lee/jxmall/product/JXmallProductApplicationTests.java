@@ -1,10 +1,9 @@
 package com.lee.jxmall.product;
 
-import cn.hutool.extra.template.engine.wit.WitTemplate;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lee.jxmall.product.entity.BrandEntity;
 import com.lee.jxmall.product.service.BrandService;
-import com.lee.jxmall.product.service.SkuInfoService;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
