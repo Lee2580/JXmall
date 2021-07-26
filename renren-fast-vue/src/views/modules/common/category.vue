@@ -1,12 +1,17 @@
 <!--  -->
 <template>
-  <el-tree
-    :data="menus"
-    :props="defaultProps"
-    node-key="catId"
-    ref="menuTree"
-    @node-click="nodeClick"
-  ></el-tree>
+  <div>
+    <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+    <el-tree
+      :data="menus"
+      :props="defaultProps"
+      node-key="catId"
+      ref="menuTree"
+      @node-click="nodeclick"
+      :filter-node-method="filterNode"
+      :highlight-current = "true"
+    ></el-tree>
+  </div>
 </template>
 
 <script>
@@ -16,11 +21,13 @@
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: {},
+  props: {},
   data() {
     //这里存放数据
     return {
       menus: [],
       expandedKey: [],
+      filterText: "",
       defaultProps: {
         children: "children",
         label: "name",
@@ -30,7 +37,11 @@ export default {
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    filterText(val) {
+      this.$refs.menuTree.filter(val);
+    }
+  },
   //方法集合
   methods: {
     getMenus() {
@@ -46,6 +57,11 @@ export default {
       console.log("子组件被点击", data, Node, component);
       //向父组件发送事件
       this.$emit("tree-node-click", data, Node, component);
+    },
+    //树节点过滤
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.name.indexOf(value) !== -1;
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
