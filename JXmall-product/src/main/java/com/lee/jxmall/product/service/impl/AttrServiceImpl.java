@@ -1,6 +1,7 @@
 package com.lee.jxmall.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.lee.common.constant.ProductConstant;
 import com.lee.jxmall.product.dao.AttrAttrgroupRelationDao;
 import com.lee.jxmall.product.dao.AttrGroupDao;
 import com.lee.jxmall.product.dao.CategoryDao;
@@ -12,7 +13,6 @@ import com.lee.jxmall.product.vo.AttrRespVo;
 import com.lee.jxmall.product.vo.AttrVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.QualifierAnnotationAutowireCandidateResolver;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,13 +65,13 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         //1、保存基本数据
         this.save(attrEntity);
         //2、保存关联关系
-        //if (attrVo.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attrVo.getAttrGroupId() != null) {
+        if (attrVo.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attrVo.getAttrGroupId() != null) {
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
             relationEntity.setAttrGroupId(attrVo.getAttrGroupId());
             relationEntity.setAttrId(attrEntity.getAttrId());
-        //    relationEntity.setAttrSort(0);
+            relationEntity.setAttrSort(0);
             relationDao.insert(relationEntity);
-        //}
+        }
 
     }
 
@@ -79,12 +79,18 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
      * 规格参数的分页模糊查询  ，比如按分类查属性、按属性类别查属性
      * @param params
      * @param catelogId
+     * @param attrType  表明查询的是 属性类型[0-销售属性，1-基本属性，2-既是销售属性又是基本属性]
      * @return
      */
     @Override
-    public PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId) {
+    public PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId, String attrType) {
 
-        QueryWrapper<AttrEntity> wrapper = new QueryWrapper<>();
+        // 传入的attrType是"base"或其他，但是数据库存的是 "0"销售 / "1"基本
+        // 属性都在pms_attr表中混合着
+        QueryWrapper<AttrEntity> wrapper =
+                new QueryWrapper<AttrEntity>().eq("attr_type", "base".equalsIgnoreCase(attrType)
+                        ?ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()
+                        :ProductConstant.AttrEnum.ATTR_TYPE_SALE.getCode());
 
         // 如果参数带有分类id，则按分类查询
         if (catelogId != 0L ) {
@@ -113,7 +119,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
             // 1.设置分类和分组的名字  先获取中间表对象  给attrRespVo 封装分组名字
             // 如果是规格参数才查询，或者说销售属性没有属性分组，只有分类
-            //if("base".equalsIgnoreCase(attrType)){
+            if("base".equalsIgnoreCase(attrType)){
                 // 根据属性id查询关联表，得到其属性分组
                 AttrAttrgroupRelationEntity attrId = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrEntity.getAttrId()));
                 if (attrId != null && attrId.getAttrGroupId() != null) {
@@ -121,7 +127,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
                     // 设置属性分组的名字
                     attrRespVo.setGroupName(attrGroupEntity.getAttrGroupName());
                 }
-            //}
+            }
 
             // 2.查询分类id 给attrRespVo 封装三级分类名字
             CategoryEntity categoryEntity = categoryDao.selectById(attrEntity.getCatelogId());
@@ -144,19 +150,21 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     public AttrRespVo getAttrInfo(Long attrId) {
         AttrRespVo respVo = new AttrRespVo();
         AttrEntity attrEntity = this.getById(attrId);
-        BeanUtils.copyProperties(attrEntity,respVo);
+        BeanUtils.copyProperties(attrEntity, respVo);
 
-        //1、设置分组信息
-        AttrAttrgroupRelationEntity attrgroupRelation = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrId));
-        //获得分组id，名字
-        if (attrgroupRelation != null) {
-            respVo.setAttrGroupId(attrgroupRelation.getAttrGroupId());
-            AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrgroupRelation.getAttrGroupId());
-            if (attrGroupEntity != null) {
-                respVo.setGroupName(attrGroupEntity.getAttrGroupName());
+        // 基本类型才进行修改
+        if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
+            //1、设置分组信息
+            AttrAttrgroupRelationEntity attrgroupRelation = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrId));
+            //获得分组id，名字
+            if (attrgroupRelation != null) {
+                respVo.setAttrGroupId(attrgroupRelation.getAttrGroupId());
+                AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrgroupRelation.getAttrGroupId());
+                if (attrGroupEntity != null) {
+                    respVo.setGroupName(attrGroupEntity.getAttrGroupName());
+                }
             }
         }
-
         //2、设置分类信息
         Long catelogId = attrEntity.getCatelogId();
         Long[] catelogPath = categoryService.findCatelongPath(catelogId);
@@ -181,7 +189,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         this.updateById(attrEntity);
 
         // 基本类型才进行修改
-        //if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
+        if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
             // 修改分组关联
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
 
@@ -195,7 +203,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
             }else {
                 relationDao.insert(relationEntity);
             }
-        //}
+        }
     }
 
 }

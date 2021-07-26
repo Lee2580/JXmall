@@ -30,13 +30,15 @@ public class AttrController {
 
 
     /**
-     * 规格参数列表
+     * 1 基本属性列表
+     * 0 销售属性列表
      */
-    @GetMapping("/base/list/{catelogId}")
+    @GetMapping("/{attrType}/list/{catelogId}")
     public R baseAttrList(@RequestParam Map<String, Object> params,
-                          @PathVariable("catelogId") Long catelogId){
+                          @PathVariable("catelogId") Long catelogId,
+                          @PathVariable("attrType") String attrType){
 
-        PageUtils page = attrService.queryBaseAttrPage(params,catelogId);
+        PageUtils page = attrService.queryBaseAttrPage(params,catelogId,attrType);
         return R.ok().put("page", page);
     }
 
