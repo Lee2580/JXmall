@@ -1,6 +1,8 @@
 package com.lee.jxmall.product.service.impl;
 
 
+import com.lee.jxmall.product.service.CategoryBrandRelationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import com.lee.common.utils.Query;
 import com.lee.jxmall.product.dao.CategoryDao;
 import com.lee.jxmall.product.entity.CategoryEntity;
 import com.lee.jxmall.product.service.CategoryService;
-
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("categoryService")
@@ -28,6 +30,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     //泛型是这个，可以不用注入
     /*@Autowired
     CategoryDao categoryDao;*/
+
+    @Autowired
+    CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -39,7 +44,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return new PageUtils(page);
     }
 
-    //三级分类
+    /**
+     * 三级分类
+     */
     @Override
     public List<CategoryEntity> listWithTree() {
         //查出所有分类
@@ -63,7 +70,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return level1Menus;
     }
 
-    //递归查找 所有菜单子菜单
+    /**
+     * 递归查找 所有菜单子菜单
+     */
     private List<CategoryEntity> getChildrens(CategoryEntity root,List<CategoryEntity> all){
         //过滤方法
         List<CategoryEntity> children = all.stream().filter(categoryEntity -> {
@@ -99,6 +108,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         Collections.reverse(parentPath);
         return parentPath.toArray(new Long[parentPath.size()]);
 
+    }
+
+    /**
+     * 级联更新所有关联的数据
+     * @param category
+     * @Transactional 表示一个事务
+     */
+    @Transactional
+    @Override
+    public void updateCascade(CategoryEntity category) {
+        this.updateById(category);
+        categoryBrandRelationService.updataCategory(category.getCatId(),category.getName());
     }
 
     /**
