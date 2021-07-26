@@ -1,15 +1,15 @@
 package com.lee.jxmall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.lee.jxmall.product.entity.AttrEntity;
+import com.lee.jxmall.product.service.AttrService;
 import com.lee.jxmall.product.service.CategoryService;
+import com.lee.jxmall.product.vo.AttrGroupRelationVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lee.jxmall.product.entity.AttrGroupEntity;
 import com.lee.jxmall.product.service.AttrGroupService;
@@ -33,6 +33,34 @@ public class AttrGroupController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private AttrService attrService;
+
+    /**
+     * 获取当前分组关联的所有属性
+     * @param attrgroupId
+     * @return
+     */
+    @GetMapping("/{attrgroupId}/attr/relation")
+    public R attrRelation(@PathVariable("attrgroupId") Long attrgroupId){
+        // 获取当前分组关联的所有属性
+        List<AttrEntity> entities = attrService.getRelationAttr(attrgroupId);
+        return R.ok().put("data", entities);
+    }
+
+    /**
+     * 删除分组关联关系
+     * @param
+     * @return
+     */
+    @PostMapping("/attr/relation/delete")
+    //@RequiresPermissions("product:attr:save")
+    public R deleteRelation(@RequestBody AttrGroupRelationVo[] vos){
+        attrService.deleteRelation(vos);
+
+        return R.ok();
+    }
 
     /**
      * 列表

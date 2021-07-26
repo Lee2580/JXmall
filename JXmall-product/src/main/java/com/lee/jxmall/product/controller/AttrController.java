@@ -3,6 +3,7 @@ package com.lee.jxmall.product.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.lee.jxmall.product.vo.AttrGroupRelationVo;
 import com.lee.jxmall.product.vo.AttrRespVo;
 import com.lee.jxmall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;

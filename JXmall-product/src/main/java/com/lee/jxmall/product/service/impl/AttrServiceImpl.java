@@ -9,12 +9,14 @@ import com.lee.jxmall.product.entity.AttrAttrgroupRelationEntity;
 import com.lee.jxmall.product.entity.AttrGroupEntity;
 import com.lee.jxmall.product.entity.CategoryEntity;
 import com.lee.jxmall.product.service.CategoryService;
+import com.lee.jxmall.product.vo.AttrGroupRelationVo;
 import com.lee.jxmall.product.vo.AttrRespVo;
 import com.lee.jxmall.product.vo.AttrVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -204,6 +206,42 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
                 relationDao.insert(relationEntity);
             }
         }
+    }
+
+    /**
+     * 根据分组id 查找关联的所有基本属性
+     * @param attrgroupId
+     * @return
+     */
+    @Override
+    public List<AttrEntity> getRelationAttr(Long attrgroupId) {
+
+        List<AttrAttrgroupRelationEntity> entities = relationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_group_id", attrgroupId));
+        List<Long> attrIds = entities.stream().map((attr) -> {
+            return attr.getAttrId();
+        }).collect(Collectors.toList());
+
+        // 根据这个属性查询到的id可能是空的
+        if(attrIds == null || attrIds.size() == 0){
+            return null;
+        }
+        return this.listByIds(attrIds);
+    }
+
+    /**
+     * 批量删除分组关联关系
+     * @param vos
+     */
+    @Override
+    public void deleteRelation(AttrGroupRelationVo[] vos) {
+
+        // 将页面收集的数据拷到 AttrAttrgroupRelationEntity
+        List<AttrAttrgroupRelationEntity> entities = Arrays.asList(vos).stream().map((item) -> {
+            AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+            BeanUtils.copyProperties(item, relationEntity);
+            return relationEntity;
+        }).collect(Collectors.toList());
+        relationDao.deleteBatchRelation(entities);
     }
 
 }
