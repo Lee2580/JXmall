@@ -11,6 +11,10 @@ import com.lee.common.utils.Query;
 import com.lee.jxmall.product.dao.BrandDao;
 import com.lee.jxmall.product.entity.BrandEntity;
 import com.lee.jxmall.product.service.BrandService;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+
+import static org.springframework.util.StringUtils.hasLength;
 
 
 @Service("brandService")
@@ -18,12 +22,21 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        QueryWrapper<BrandEntity> wrapper = new QueryWrapper<>();
+        //获取key
+        String key = (String) params.get("key");
+        if((!ObjectUtils.isEmpty(key))){
+            // 字段等于  or  模糊查询
+            wrapper.eq("brand_id", key).or().like("name", key);
+        }
+        // 按照分页信息和查询条件  进行查询
         IPage<BrandEntity> page = this.page(
+                // 传入一个IPage对象，他是接口，实现类是Page
                 new Query<BrandEntity>().getPage(params),
-                new QueryWrapper<BrandEntity>()
+                wrapper
         );
-
         return new PageUtils(page);
+
     }
 
 }

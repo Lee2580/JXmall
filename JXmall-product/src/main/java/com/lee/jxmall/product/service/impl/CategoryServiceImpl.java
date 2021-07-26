@@ -3,6 +3,8 @@ package com.lee.jxmall.product.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -87,4 +89,29 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         //逻辑删除
         baseMapper.deleteBatchIds(asList);
     }
+
+    @Override
+    public Long[] findCatelongPath(Long catelogId) {
+        List<Long> paths=new ArrayList<>();
+
+        List<Long> parentPath = findParentPath(catelogId, paths);
+        // 收集的时候是顺序 前端是逆序显示的 所以用集合工具类给它逆序一下
+        Collections.reverse(parentPath);
+        return parentPath.toArray(new Long[parentPath.size()]);
+
+    }
+
+    /**
+     * 递归收集所有父节点
+     */
+    private List<Long> findParentPath(Long catlogId, List<Long> paths) {
+        // 1、收集当前节点id
+        paths.add(catlogId);
+        CategoryEntity byId = this.getById(catlogId);
+        if (byId.getParentCid() != 0) {
+            findParentPath(byId.getParentCid(), paths);
+        }
+        return paths;
+    }
+
 }

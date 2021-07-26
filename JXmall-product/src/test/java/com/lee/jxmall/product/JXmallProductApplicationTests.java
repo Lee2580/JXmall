@@ -4,17 +4,30 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lee.jxmall.product.entity.BrandEntity;
 import com.lee.jxmall.product.service.BrandService;
 
+import com.lee.jxmall.product.service.CategoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @SpringBootTest
 class JXmallProductApplicationTests {
 
     @Autowired
     BrandService brandService;
+
+    @Autowired
+    CategoryService categoryService;
+
+    @Test
+    void testFindPath(){
+        Long[] catelongPath = categoryService.findCatelongPath(225L);
+        log.info("完整路径={}", Arrays.asList(catelongPath));
+    }
 
     //测试添加
     @Test
