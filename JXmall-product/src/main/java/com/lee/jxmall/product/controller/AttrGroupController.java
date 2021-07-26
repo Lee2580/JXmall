@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.lee.jxmall.product.entity.AttrEntity;
+import com.lee.jxmall.product.service.AttrAttrgroupRelationService;
 import com.lee.jxmall.product.service.AttrService;
 import com.lee.jxmall.product.service.CategoryService;
 import com.lee.jxmall.product.vo.AttrGroupRelationVo;
@@ -16,6 +17,7 @@ import com.lee.jxmall.product.service.AttrGroupService;
 import com.lee.common.utils.PageUtils;
 import com.lee.common.utils.R;
 
+import javax.management.relation.RelationService;
 
 
 /**
@@ -37,6 +39,9 @@ public class AttrGroupController {
     @Autowired
     private AttrService attrService;
 
+    @Autowired
+    private AttrAttrgroupRelationService relationService;
+
     /**
      * 获取当前分组关联的所有属性
      * @param attrgroupId
@@ -47,6 +52,31 @@ public class AttrGroupController {
         // 获取当前分组关联的所有属性
         List<AttrEntity> entities = attrService.getRelationAttr(attrgroupId);
         return R.ok().put("data", entities);
+    }
+
+    /**
+     * 获取当前分组未关联的所有属性
+     * @param attrgroupId
+     * @return
+     */
+    @GetMapping("/{attrgroupId}/noattr/relation")
+    public R attrNoRelation(@PathVariable("attrgroupId") Long attrgroupId,
+                            @RequestParam Map<String, Object> params){
+
+        PageUtils page = attrService.getNoRelationAttr(params,attrgroupId);
+
+        return R.ok().put("page", page);
+    }
+
+    /**
+     * 点击确认新增
+     * @param vos
+     * @return
+     */
+    @RequestMapping("/attr/relation")
+    public R addRelation(@RequestBody List<AttrGroupRelationVo> vos){
+        relationService.saveBatch(vos);
+        return R.ok();
     }
 
     /**

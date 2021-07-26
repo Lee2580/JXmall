@@ -3,7 +3,9 @@ package com.lee.jxmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lee.common.utils.PageUtils;
 import com.lee.jxmall.product.entity.AttrAttrgroupRelationEntity;
+import com.lee.jxmall.product.vo.AttrGroupRelationVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +18,7 @@ import java.util.Map;
 public interface AttrAttrgroupRelationService extends IService<AttrAttrgroupRelationEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void saveBatch(List<AttrGroupRelationVo> vos);
 }
 
