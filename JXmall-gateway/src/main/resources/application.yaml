@@ -46,6 +46,14 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+        # 优惠服务
+  #      - id: coupon_route
+  #          uri: lb://jxmall-coupon
+  #          predicates:
+  #            - Path=/api/coupon/**
+  #          filters:
+  #            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
         # 保护路由放到低优先级
         - id: admin_route
           uri: lb://renren-fast

@@ -40,7 +40,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
             springboot任何方法从配置文件中获取值，都能使用
             配置中心有的优先使用配置中心
  */
-
 @EnableDiscoveryClient
 @SpringBootApplication
 public class JXmallCouponApplication {

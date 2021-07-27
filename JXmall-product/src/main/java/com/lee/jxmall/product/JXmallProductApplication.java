@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /*
     整合mybatis-plus
@@ -20,6 +21,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
         2、配置逻辑删除的组件（3.1以上省略）
         3、加逻辑删除注解 @TableLogic
  */
+@EnableFeignClients(basePackages ="com.lee.jxmall.product.feign")
 @MapperScan("com.lee.jxmall.product.dao")
 @EnableDiscoveryClient
 @SpringBootApplication

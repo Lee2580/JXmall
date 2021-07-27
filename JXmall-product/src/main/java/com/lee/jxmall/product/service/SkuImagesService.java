@@ -2,22 +2,19 @@ package com.lee.jxmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lee.common.utils.PageUtils;
-import com.lee.jxmall.product.entity.SpuImagesEntity;
+import com.lee.jxmall.product.entity.SkuImagesEntity;
 
-import java.util.List;
 import java.util.Map;
 
 /**
- * spu图片
+ * sku图片
  *
  * @author lee
  * @email 1114862851@qq.com
- * @date 2021-07-21 11:01:33
+ * @date 2021-07-27 15:11:49
  */
-public interface SpuImagesService extends IService<SpuImagesEntity> {
+public interface SkuImagesService extends IService<SkuImagesEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-
-    void saveImages(Long id, List<String> images);
 }
 

@@ -3,12 +3,9 @@ package com.lee.jxmall.coupon.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.lee.common.to.SkuReductionTo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lee.jxmall.coupon.entity.SkuFullReductionEntity;
 import com.lee.jxmall.coupon.service.SkuFullReductionService;
@@ -29,6 +26,17 @@ import com.lee.common.utils.R;
 public class SkuFullReductionController {
     @Autowired
     private SkuFullReductionService skuFullReductionService;
+
+    /**
+     *  被调用的远程服务的接口方法
+     *  保存优惠、满减信息
+     */
+    @PostMapping("/saveinfo")
+    public R saveInfo(@RequestBody SkuReductionTo reductionTo){
+        skuFullReductionService.saveSkuReduction(reductionTo);
+
+        return R.ok();
+    }
 
     /**
      * 列表
