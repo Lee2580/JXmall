@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: jxmall-member
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.79.10:8848
+        namespace: a5df4b18-a847-4afe-a9bb-70472fcab7dd

@@ -38,6 +38,14 @@ spring:
           filters:
             - RewritePath=/api/thirdparty/(?<segment>/?.*),/$\{segment}
 
+        # 会员服务
+        - id: member_route
+          uri: lb://jxmall-member
+          predicates:
+            - Path=/api/member/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
         # 保护路由放到低优先级
         - id: admin_route
           uri: lb://renren-fast
