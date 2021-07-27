@@ -5,9 +5,14 @@ import com.lee.jxmall.product.dao.BrandDao;
 import com.lee.jxmall.product.dao.CategoryDao;
 import com.lee.jxmall.product.entity.BrandEntity;
 import com.lee.jxmall.product.entity.CategoryEntity;
+import com.lee.jxmall.product.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -27,6 +32,12 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
 
     @Autowired
     CategoryDao categoryDao;
+
+    @Autowired
+    CategoryBrandRelationDao categoryBrandRelationDao;
+
+    @Autowired
+    BrandService brandService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -69,7 +80,33 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
     }
 
     @Override
-    public void updataCategory(Long catId, String name) {
+    public void updateCategory(Long catId, String name) {
         this.baseMapper.updateCategory(catId,name);
+    }
+
+    /**
+     * 查询出所有的相关品牌
+     * @param catId
+     * @return
+     */
+    @Override
+    public List<BrandEntity> getBrandsByCatId(Long catId) {
+
+        //根据catelog_id查询出catId(分类id)下的关联表信息（品牌与分类关联表pms_category_brand_relation）
+        List<CategoryBrandRelationEntity> catelogId
+                = categoryBrandRelationDao.selectList(new QueryWrapper<CategoryBrandRelationEntity>()
+                .eq("catelog_id", catId));
+        //在关联表里查询出brand_id,通过brand_id查询出品牌
+        //因为一个分类id下有一个集合的brandId（品牌id）
+        List<BrandEntity> collect = catelogId.stream().map((item) -> {
+            //关联表里查询出brand_id
+            Long brandId = item.getBrandId();
+            //通过brand_id查询出品牌详情
+            BrandEntity brandEntity = brandService.getById(brandId);
+            return brandEntity;
+        }).collect(Collectors.toList());
+
+        //返回所有品牌
+        return collect;
     }
 }

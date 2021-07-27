@@ -119,7 +119,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Override
     public void updateCascade(CategoryEntity category) {
         this.updateById(category);
-        categoryBrandRelationService.updataCategory(category.getCatId(),category.getName());
+        categoryBrandRelationService.updateCategory(category.getCatId(),category.getName());
     }
 
     /**

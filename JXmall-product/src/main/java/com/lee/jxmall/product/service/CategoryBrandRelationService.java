@@ -2,8 +2,10 @@ package com.lee.jxmall.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lee.common.utils.PageUtils;
+import com.lee.jxmall.product.entity.BrandEntity;
 import com.lee.jxmall.product.entity.CategoryBrandRelationEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,6 +23,8 @@ public interface CategoryBrandRelationService extends IService<CategoryBrandRela
 
     void updateBrand(Long brandId, String name);
 
-    void updataCategory(Long catId, String name);
+    void updateCategory(Long catId, String name);
+
+    List<BrandEntity> getBrandsByCatId(Long catId);
 }
 
