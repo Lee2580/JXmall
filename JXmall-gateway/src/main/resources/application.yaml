@@ -46,6 +46,14 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+        # 库存服务
+        - id: ware_route
+          uri: lb://jxmall-ware
+          predicates:
+            - Path=/api/ware/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
         # 优惠服务
   #      - id: coupon_route
   #          uri: lb://jxmall-coupon

@@ -10,6 +10,15 @@ spring:
     username: lee
     password: li15854198694
 
+  application:
+    name: jxmall-ware
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.79.10:8848
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
 mybatis-plus:
   # sql映射文件
   mapper-locations: classpath:/mapper/**/*.xml
@@ -17,3 +26,7 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+
+logging:
+  level:
+    com.lee: debug
