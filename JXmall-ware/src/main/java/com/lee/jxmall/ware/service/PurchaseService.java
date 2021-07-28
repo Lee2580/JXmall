@@ -3,7 +3,10 @@ package com.lee.jxmall.ware.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lee.common.utils.PageUtils;
 import com.lee.jxmall.ware.entity.PurchaseEntity;
+import com.lee.jxmall.ware.vo.MergeVo;
+import com.lee.jxmall.ware.vo.PurchaseDoneVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +19,13 @@ import java.util.Map;
 public interface PurchaseService extends IService<PurchaseEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    PageUtils queryPageUnreceivedPurchase(Map<String, Object> params);
+
+    void mergePurchase(MergeVo mergeVo);
+
+    void received(List<Long> ids);
+
+    void done(PurchaseDoneVo purchaseDoneVo);
 }
 
