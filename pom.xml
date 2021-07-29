@@ -19,7 +19,8 @@
         <module>renren-generator</module>
         <module>JXmall-common</module>
         <module>JXmall-gateway</module>
+        <module>JXmall-third-paty</module>
+        <module>JXmall-search</module>
     </modules>
-
 
 </project>

@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: jxmall-search
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.79.10:8848
+        namespace: c5481637-978a-4b27-9893-d692eb66f23d
