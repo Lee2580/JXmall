@@ -26,7 +26,7 @@ spring:
         - id: product_route
           uri: lb://jxmall-product
           predicates:
-            - Path=/api/product/**
+            - Path=/api/product/**,/hello
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
@@ -71,4 +71,8 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*), /renren-fast/$\{segment}
 
-
+        # Nginx代理给网关的时候，会丢失请求Host
+        - id: jxmall_host_route
+          uri: lb://jxmall-product
+          predicates:
+            - Host=**.jxmall.com,jxmall.com

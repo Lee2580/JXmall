@@ -24,7 +24,7 @@ spring:
 
   # thymeleaf 关闭缓存
   thymeleaf:
-    cache: false
+    cache: true
 
 mybatis-plus:
   # sql映射文件
@@ -40,4 +40,4 @@ mybatis-plus:
 
 logging:
   level:
-    com.lee: debug
+    com.lee: error
