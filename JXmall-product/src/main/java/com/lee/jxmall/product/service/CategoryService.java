@@ -3,6 +3,7 @@ package com.lee.jxmall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lee.common.utils.PageUtils;
 import com.lee.jxmall.product.entity.CategoryEntity;
+import com.lee.jxmall.product.vo.Catalog2Vo;
 
 import java.util.List;
 import java.util.Map;
@@ -31,5 +32,9 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     void updateCascade(CategoryEntity category);
 
+
+    List<CategoryEntity> getLevel1Categorys();
+
+    Map<String, List<Catalog2Vo>> getCatalogJson();
 }
 

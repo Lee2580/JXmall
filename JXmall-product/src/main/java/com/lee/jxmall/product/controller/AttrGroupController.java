@@ -18,8 +18,6 @@ import com.lee.jxmall.product.service.AttrGroupService;
 import com.lee.common.utils.PageUtils;
 import com.lee.common.utils.R;
 
-import javax.management.relation.RelationService;
-
 
 /**
  * 属性分组

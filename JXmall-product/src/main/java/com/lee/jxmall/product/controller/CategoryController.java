@@ -2,18 +2,15 @@ package com.lee.jxmall.product.controller;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lee.jxmall.product.entity.CategoryEntity;
 import com.lee.jxmall.product.service.CategoryService;
-import com.lee.common.utils.PageUtils;
 import com.lee.common.utils.R;
 
 
