@@ -1,10 +1,7 @@
-server:
-  port: 7600
 spring:
   application:
-    name: jxmall-search
+    name: renren-fast
   cloud:
     nacos:
-      discovery:
+      config:
         server-addr: 192.168.79.10:8848
-

@@ -1,14 +1,12 @@
 package com.lee.jxmall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.lee.jxmall.ware.vo.SkuHasStockVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lee.jxmall.ware.entity.WareSkuEntity;
 import com.lee.jxmall.ware.service.WareSkuService;
@@ -29,6 +27,19 @@ import com.lee.common.utils.R;
 public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
+
+    /**
+     * 查询sku是否有库存
+     * 返回skuId 和 stock库存量
+     * @param SkuIds
+     * @return
+     */
+    @PostMapping("/hasStock")
+    public R getSkuHasStock(@RequestBody List<Long> SkuIds){
+        List<SkuHasStockVo> vos = wareSkuService.getSkuHasStock(SkuIds);
+
+        return R.ok().setData(vos);
+    }
 
     /**
      * 列表
