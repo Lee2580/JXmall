@@ -46,7 +46,7 @@ spring:
 
   # thymeleaf 关闭缓存
   thymeleaf:
-    cache: true
+    cache: false
 
 mybatis-plus:
   # sql映射文件
