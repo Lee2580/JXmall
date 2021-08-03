@@ -1,11 +1,15 @@
 package com.lee.jxmall.search.service.Impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.lee.common.to.es.SkuEsModel;
 import com.lee.common.utils.R;
 import com.lee.jxmall.search.config.JXmallESConfig;
 import com.lee.jxmall.search.constant.ESConstant;
+import com.lee.jxmall.search.feign.ProductFeignService;
 import com.lee.jxmall.search.service.MallSearchService;
+import com.lee.jxmall.search.vo.AttrResponseVo;
+import com.lee.jxmall.search.vo.BrandVo;
 import com.lee.jxmall.search.vo.SearchParamVo;
 import com.lee.jxmall.search.vo.SearchResultVo;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.naming.directory.SearchResult;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -50,6 +53,9 @@ public class MallSearchServiceImpl implements MallSearchService {
 
     @Autowired
     RestHighLevelClient restHighLevelClient;
+
+    @Autowired
+    ProductFeignService productFeignService;
 
     /**
      * 去ES进行检索
@@ -197,13 +203,15 @@ public class MallSearchServiceImpl implements MallSearchService {
         result.setPageNavs(pageNavs);
 
         //6、构建面包屑导航
-        /*if (param.getAttrs() != null && param.getAttrs().size() > 0) {
+        if (param.getAttrs() != null && param.getAttrs().size() > 0) {
             List<SearchResultVo.NavVo> collect = param.getAttrs().stream().map(attr -> {
                 //1、分析每一个attrs传过来的参数值
                 SearchResultVo.NavVo navVo = new SearchResultVo.NavVo();
+                // 进行分割，
                 String[] s = attr.split("_");
                 navVo.setNavValue(s[1]);
                 R r = productFeignService.getAttrsInfo(Long.parseLong(s[0]));
+                result.getAttrIds().add(Long.parseLong(s[0]));
                 if (r.getCode() == 0) {
                     AttrResponseVo data = r.getData("attr", new TypeReference<AttrResponseVo>() {
                     });
@@ -213,24 +221,57 @@ public class MallSearchServiceImpl implements MallSearchService {
                 }
 
                 //2、取消了这个面包屑以后，我们要跳转到哪个地方，将请求的地址url里面的当前置空
-                //拿到所有的查询条件，去掉当前
-                String encode = null;
-                try {
-                    encode = URLEncoder.encode(attr, "UTF-8");
-                    encode.replace("+", "%20");  //浏览器对空格的编码和Java不一样，差异化处理
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                String replace = param.get_queryString().replace("&attrs=" + attr, "");
-                navVo.setLink("http://search.kkmall.com/list.html?" + replace);
+                //  拿到所有的查询条件，去掉当前
+                String replace = replaceQueryString(param, attr,"attrs");
+                navVo.setLink("http://search.jxmall.com/list.html?" + replace);
 
                 return navVo;
             }).collect(Collectors.toList());
 
             result.setNavs(collect);
-        }*/
+        }
+
+        //品牌、分类
+        if (param.getBrandId()!=null&&param.getBrandId().size()>0){
+            List<SearchResultVo.NavVo> navVos=result.getNavs();
+            SearchResultVo.NavVo navVo = new SearchResultVo.NavVo();
+
+            navVo.setNavName("品牌");
+            //TODO 远程查询所有品牌
+            R r = productFeignService.brandsInfo(param.getBrandId());
+            //远程查询成功
+            if (r.getCode()==0){
+                List<BrandVo> brand = r.getData("brand", new TypeReference<List<BrandVo>>() {
+                });
+                StringBuffer buffer = new StringBuffer();
+                String replace ="";
+                for (BrandVo brandVo: brand) {
+                    buffer.append(brandVo.getBrandName()+";");
+                    replace = replaceQueryString(param, brandVo.getBrandId()+"","brandId");
+                }
+                navVo.setNavValue(buffer.toString());
+                navVo.setLink("http://search.jxmall.com/list.html?" + replace);
+            }
+
+            navVos.add(navVo);
+        }
+        //TODO 分类：不需要导航取消
+
         return result;
 
+    }
+
+    private String replaceQueryString(SearchParamVo param, String value,String key) {
+        String encode = null;
+        try {
+            encode = URLEncoder.encode(value, "UTF-8");
+            //浏览器对空格的编码和Java不一样，差异化处理
+            encode.replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String replace = param.get_queryString().replace("&"+key+"=" + encode, "");
+        return replace;
     }
 
     /**

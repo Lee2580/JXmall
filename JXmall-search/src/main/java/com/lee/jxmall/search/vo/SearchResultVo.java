@@ -3,6 +3,7 @@ package com.lee.jxmall.search.vo;
 import com.lee.common.to.es.SkuEsModel;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,7 +23,7 @@ public class SearchResultVo {
     private Long total;
     //总页码
     private Integer totalPages;
-
+    //导航页码
     private List<Integer> pageNavs;
 
     /**
@@ -42,8 +43,14 @@ public class SearchResultVo {
 
     //===========================以上是返回给页面的所有信息============================//
 
-    /* 面包屑导航数据 */
-    private List<NavVo> navs;
+    /**
+     * 面包屑导航数据
+     */
+    private List<NavVo> navs = new ArrayList<>();
+    /**
+     * 哪些属性被筛选了
+     */
+    private List<Long> attrIds = new ArrayList<>();
 
     @Data
     public static class NavVo {

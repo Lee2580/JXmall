@@ -768,7 +768,9 @@
     </div>
     <div class="JD_ipone_one c">
       <!-- 遍历面包屑功能 -->
-      <a th:href="${nav.link}" th:each="nav:${result.navs}"><span th:text="${nav.navName}"></span>：<span th:text="${nav.navValue}"></span> x</a>
+      <a th:href="${nav.link}" th:each="nav:${result.navs}">
+        <span th:text="${nav.navName}"></span>：
+        <span th:text="${nav.navValue}"></span> x</a>
     </div>
     <i><img src="/static/search/image/right-@1x.png" alt=""></i>
   </div>
@@ -783,9 +785,9 @@
         <h3><b>手机</b><em>商品筛选</em></h3>
         <div class="st-ext">共&nbsp;<span>10135</span>个商品</div>
       </div>
-      <div class="JD_nav_logo">
+      <div class="JD_nav_logo" th:with="brandId = ${param.brandId}">
         <!--品牌-->
-        <div class="JD_nav_wrap">
+        <div th:if="${#strings.isEmpty(brandId)}" class="JD_nav_wrap">
           <div class="sl_key">
             <span><b>品牌：</b></span>
           </div>
@@ -848,8 +850,9 @@
           </div>
         </div>
 
-        <!--其它的所有需要展示的属性-->
-        <div class="JD_pre" th:each="attr : ${result.attrs}">
+        <!--其它的所有需要展示的属性，包含的属性不显示，不包含的才显示-->
+        <div class="JD_pre" th:each="attr : ${result.attrs}"
+             th:if="${!#lists.contains(result.attrIds,attr.attrId)}">
           <div class="sl_key">
             <span th:text="${attr.attrName}">屏幕尺寸：</span>
           </div>
@@ -1056,21 +1059,27 @@
           <div class="filter_top">
             <div class="filter_top_left" th:with="p = ${param.sort}, priceRange = ${param.skuPrice}">
               <a sort="hotScore"
-                 th:class="${(!#strings.isEmpty(p) && #strings.startsWith(p,'hotScore') && #strings.endsWith(p,'desc')) ? 'sort_a desc' : 'sort_a'}"
+                 th:class="${(!#strings.isEmpty(p) && #strings.startsWith(p,'hotScore') &&
+                  #strings.endsWith(p,'desc')) ? 'sort_a desc' : 'sort_a'}"
                  th:attr="style=${(#strings.isEmpty(p) || #strings.startsWith(p,'hotScore')) ?
-                                   'color: #fff; border-color: #e4393c; background: #e4393c;':'color: #333; border-color: #ccc; background: #fff;' }">
+                                   'color: #fff; border-color: #e4393c; background: #e4393c;':
+                                   'color: #333; border-color: #ccc; background: #fff;' }">
                 综合排序[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'hotScore') &&
                 #strings.endsWith(p,'desc')) ?'↑':'↓' }]]</a>
               <a sort="saleCount"
-                 th:class="${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount') && #strings.endsWith(p,'desc')) ? 'sort_a desc' : 'sort_a'}"
+                 th:class="${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount') &&
+                 #strings.endsWith(p,'desc')) ? 'sort_a desc' : 'sort_a'}"
                  th:attr="style=${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount')) ?
-                                   'color: #fff; border-color: #e4393c; background: #e4393c;':'color: #333; border-color: #ccc; background: #fff;' }">
+                                   'color: #fff; border-color: #e4393c; background: #e4393c;':
+                                   'color: #333; border-color: #ccc; background: #fff;' }">
                 销量[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount') &&
                 #strings.endsWith(p,'desc'))?'↑':'↓' }]]</a>
               <a sort="skuPrice"
-                 th:class="${(!#strings.isEmpty(p) && #strings.startsWith(p,'skuPrice') && #strings.endsWith(p,'desc')) ? 'sort_a desc' : 'sort_a'}"
+                 th:class="${(!#strings.isEmpty(p) && #strings.startsWith(p,'skuPrice') &&
+                 #strings.endsWith(p,'desc')) ? 'sort_a desc' : 'sort_a'}"
                  th:attr="style=${(!#strings.isEmpty(p) && #strings.startsWith(p,'skuPrice')) ?
-                                   'color: #fff; border-color: #e4393c; background: #e4393c;':'color: #333; border-color: #ccc; background: #fff;' }">
+                                   'color: #fff; border-color: #e4393c; background: #e4393c;':
+                                   'color: #333; border-color: #ccc; background: #fff;' }">
                 价格[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'skuPrice') &&
                 #strings.endsWith(p,'desc'))?'↑':'↓' }]]</a>
               <a sort="hotScore" class="sort_a">评论分</a>
@@ -1192,7 +1201,8 @@
                 </li>
                 <li>
                   <a th:with="check = ${param.hasStock}">
-                    <input id="showHasStock" type="checkbox" th:checked="${#strings.equals(check,'1')?true:false}">
+                    <input id="showHasStock" type="checkbox"
+                           th:checked="${#strings.equals(check,'1')?true:false}">
                     仅显示有货
                   </a>
                 </li>
@@ -1208,23 +1218,27 @@
           </div>
           <!--排序内容，每四个是一组-->
           <div class="rig_tab">
-            <div th:each="product : ${result.getProduct()}">
+            <div th:each="product : ${result.getProducts()}">
               <div class="ico">
                 <i class="iconfont icon-weiguanzhu"></i>
                 <a href="/list.html">关注</a>
               </div>
+              <!--大图-->
               <p class="da">
                 <a th:href="|http://item.jxmall.com/${product.skuId}.html|" >
                   <img   class="dim" th:src="${product.skuImg}">
                 </a>
               </p>
+              <!--图片-->
               <ul class="tab_im">
                 <li><a href="/list.html" title="黑色">
                   <img th:src="${product.skuImg}"></a></li>
               </ul>
+              <!--价格-->
               <p class="tab_R">
-                <span th:text="'￥' + ${product.skuPrice}">¥5199.00</span>
+                <span th:text="'¥' + ${product.skuPrice}">¥5199.00</span>
               </p>
+              <!--商品名字 utext:不转义-->
               <p class="tab_JE">
                 <a href="/list.html" th:utext="${product.skuTitle}">
                   Apple iPhone 7 Plus (A1661) 32G 黑色 移动联通电信4G手机
@@ -2025,9 +2039,9 @@
     location.href = replaceParamVal(location.href,name,value,true)
   }
 
-
+  //搜索框
   function searchByKeyword() {
-    searchProducts("keyword", $("#keyword_input").val());
+    location.href = replaceParamVal(location.href,"keyword", $("#keyword_input").val(),false);
   }
 
   $(".page_a").click(function () {
@@ -2067,7 +2081,9 @@
   };
 
   $(".sort_a").click(function () {
+    //1、点击元素变为选中，改变样式
     changeStyle(this);
+    //2、跳转到指定位置
     let sort = $(this).attr("sort");
     sort = $(this).hasClass("desc") ? sort + "_desc" : sort + "_asc";
     location.href = replaceParamVal(location.href, "sort", sort,false);
@@ -2075,20 +2091,24 @@
     return false;
   });
 
+  //改变样式
   function changeStyle(ele) {
     // location.href = replaceParamVal(href, "pageNum", pn,flase);
     // color: #333; border-color: #ccc; background: #fff
     // color: #fff; border-color: #e4393c; background: #e4393c
+    //清空兄弟元素的样式与升降号
     $(".sort_a").css({"color": "#333", "border-color": "#ccc", "background": "#fff"});
     $(".sort_a").each(function () {
       let text = $(this).text().replace("↓", "").replace("↑", "");
       $(this).text(text);
     })
-
+    //改变当前元素的样式
     $(ele).css({"color": "#FFF", "border-color": "#e4393c", "background": "#e4393c"});
+    //加上就是降序，不加就是升序
     $(ele).toggleClass("desc");
-
+    //判断升降序样式
     if ($(ele).hasClass("desc")) {
+      //先替换成空，再加样式
       let text = $(ele).text().replace("↓", "").replace("↑", "");
       text = text + "↓";
       $(ele).text(text);
@@ -2101,6 +2121,7 @@
 
 
   $("#skuPriceSearchBtn").click(function () {
+    //1、拼上价格区间的查询条件
     let from = $(`#skuPriceFrom`).val();
     let to = $(`#skuPriceTo`).val();
 

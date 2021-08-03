@@ -10,5 +10,5 @@ public class ESConstant {
     /**
      * sku数据在es中的索引
      */
-    public static final Integer PRODUCT_PAGESIZE = 2;
+    public static final Integer PRODUCT_PAGESIZE = 16;
 }

@@ -28,6 +28,15 @@ public class R extends HashMap<String, Object> {
 		return this;
 	}
 
+	public <T>T getData(String key,TypeReference<T> typeReference){
+		//默认是map
+		Object data = get(key);
+		//通过json转化成想要的类型
+		String s = JSON.toJSONString(data);
+		T t = JSON.parseObject(s, typeReference);
+		return t;
+	}
+
 	/**
 	 * 利用fastjson进行逆转
 	 * <T>T 要用这个泛型要先声明这个泛型
