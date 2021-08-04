@@ -63,3 +63,10 @@ mybatis-plus:
 logging:
   level:
     com.lee: error
+
+# 自定义线程池配置
+jxmall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10

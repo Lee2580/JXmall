@@ -75,7 +75,7 @@ spring:
         - id: jxmall_host_route
           uri: lb://jxmall-product
           predicates:
-            - Host=jxmall.com
+            - Host=jxmall.com,item.jxmall.com
 
         # search
         - id: jxmall_search_route

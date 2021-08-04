@@ -1,10 +1,24 @@
 package com.lee.jxmall.product.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
+import com.lee.common.utils.R;
+import com.lee.jxmall.product.entity.SkuImagesEntity;
+import com.lee.jxmall.product.entity.SpuInfoDescEntity;
+import com.lee.jxmall.product.service.*;
+import com.lee.jxmall.product.vo.SeckillInfoVo;
+import com.lee.jxmall.product.vo.SkuItemSaleAttrVo;
+import com.lee.jxmall.product.vo.SkuItemVo;
+import com.lee.jxmall.product.vo.SpuItemAttrGroupVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -13,12 +27,29 @@ import com.lee.common.utils.Query;
 
 import com.lee.jxmall.product.dao.SkuInfoDao;
 import com.lee.jxmall.product.entity.SkuInfoEntity;
-import com.lee.jxmall.product.service.SkuInfoService;
 import org.springframework.util.ObjectUtils;
 
 
 @Service("skuInfoService")
 public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> implements SkuInfoService {
+
+    @Autowired
+    SkuImagesService skuImagesService;
+
+    @Autowired
+    SpuInfoDescService spuInfoDescService;
+
+    @Autowired
+    AttrGroupService attrGroupService;
+
+    @Autowired
+    SkuSaleAttrValueService skuSaleAttrValueService;
+
+    @Autowired
+    ThreadPoolExecutor threadPoolExecutor;
+
+    /*@Autowired
+    SeckillFeignService seckillFeignService;*/
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -110,6 +141,70 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     @Override
     public List<SkuInfoEntity> getSkusBySpuId(Long spuId) {
         return this.list(new QueryWrapper<SkuInfoEntity>().eq("spu_id", spuId));
+    }
+
+
+    @Override
+    public SkuItemVo info(Long skuId) throws ExecutionException, InterruptedException {
+
+        SkuItemVo skuItemVo = new SkuItemVo();
+        /**
+         * 1、2、6是异步的
+         */
+        //1、sku基本信息获取   pms_sku_info
+        CompletableFuture<SkuInfoEntity> infoFuture = CompletableFuture.supplyAsync(() -> {
+
+            SkuInfoEntity info = getById(skuId);
+            skuItemVo.setInfo(info);
+            return info;
+        }, threadPoolExecutor);
+        /**
+         * 3、4、5任务是并列的，必须等1完成
+         */
+        //3、spu的销售属性组合
+        CompletableFuture<Void> saleAttrFuture =infoFuture.thenAcceptAsync(res -> {
+
+            List<SkuItemSaleAttrVo> saleAttrVos = skuSaleAttrValueService.getSaleAttrsBuSpuId(res.getSpuId());
+            skuItemVo.setSaleAttr(saleAttrVos);
+        },threadPoolExecutor);
+
+        //4、获取spu的介绍（商品介绍）  pms_spu_info_desc
+        CompletableFuture<Void> descFuture = infoFuture.thenAcceptAsync(res -> {
+
+            SpuInfoDescEntity spuInfo = spuInfoDescService.getById(res.getSpuId());
+            skuItemVo.setDesc(spuInfo);
+        }, threadPoolExecutor);
+
+        //5、获取spu的规格参数信息
+        CompletableFuture<Void> baseAttrFuture = infoFuture.thenAcceptAsync(res -> {
+
+            List<SpuItemAttrGroupVo> attrGroupVos = attrGroupService.
+                    getAttrGroupWithAttrsBySpuId(res.getSpuId(), res.getCatalogId());
+            skuItemVo.setGroupAttrs(attrGroupVos);
+        }, threadPoolExecutor);
+
+        //2、sku图片信息     psm_sku_images
+        CompletableFuture<Void> ImgageFuture = CompletableFuture.runAsync(() -> {
+
+            List<SkuImagesEntity> images = skuImagesService.getImagesBySkuId(skuId);
+            skuItemVo.setImages(images);
+        }, threadPoolExecutor);
+
+        // 6.查询当前sku是否参与秒杀优惠
+      /*  CompletableFuture<Void> secKillFuture = CompletableFuture.runAsync(() -> {
+            R skuSeckillInfo = seckillFeignService.getSkuSeckillInfo(skuId);
+            if (skuSeckillInfo.getCode() == 0) {
+                SeckillInfoVo seckillInfoVo = skuSeckillInfo.getData(new TypeReference<SeckillInfoVo>() {
+                });
+                skuItemVo.setSeckillInfoVo(seckillInfoVo);
+            }
+        }, threadPoolExecutor);*/
+
+        // 等待所有任务都完成再返回
+        CompletableFuture.allOf(ImgageFuture,saleAttrFuture,descFuture,baseAttrFuture).get();
+        //CompletableFuture.allOf(ImgageFuture, saleAttrFuture, descFuture, baseAttrFuture, secKillFuture).get();
+
+        return skuItemVo;
     }
 
 }

@@ -4,6 +4,7 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import com.lee.jxmall.product.entity.AttrEntity;
 import com.lee.jxmall.product.service.AttrService;
 import com.lee.jxmall.product.vo.AttrGroupWithAttrsVo;
+import com.lee.jxmall.product.vo.SpuItemAttrGroupVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,5 +87,20 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         }).collect(Collectors.toList());
 
         return collect;
+    }
+
+    /**
+     * 查询当前spu对应的所有属性的分组信息以及当前分组下的所有属性对应的值
+     * @param spuId
+     * @param catalogId
+     * @return
+     */
+    @Override
+    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId) {
+
+        AttrGroupDao baseMapper = this.getBaseMapper();
+        List<SpuItemAttrGroupVo> vos= baseMapper.getAttrGroupWithAttrBySpuId(spuId,catalogId);
+
+        return vos;
     }
 }
