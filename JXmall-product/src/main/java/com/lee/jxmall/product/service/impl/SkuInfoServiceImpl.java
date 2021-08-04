@@ -143,7 +143,13 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
         return this.list(new QueryWrapper<SkuInfoEntity>().eq("spu_id", spuId));
     }
 
-
+    /**
+     * 查询当前sku的详情
+     * @param skuId
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @Override
     public SkuItemVo info(Long skuId) throws ExecutionException, InterruptedException {
 

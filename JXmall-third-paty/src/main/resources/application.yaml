@@ -14,3 +14,10 @@ spring:
       oss:
         endpoint: oss-cn-qingdao.aliyuncs.com
         bucket: jxmall-lee
+      sms:
+        host: https://gyytz.market.alicloudapi.com
+        path: /sms/smsSend
+        appcode: 3cf8597ab6c94f10803e9ac4525b0ac5
+        smsSignId: 2e65b1bb3d054466b82f0c9d125465e2
+        templateId: 908e94ccf08b4476ba6c876d13f084ad
+

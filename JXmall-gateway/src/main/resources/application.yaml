@@ -82,3 +82,9 @@ spring:
           uri: lb://jxmall-search
           predicates:
             - Host=search.jxmall.com
+
+        # auth
+        - id: jxmall_auth_route
+          uri: lb://jxmall-auth-server
+          predicates:
+            - Host=auth.jxmall.com

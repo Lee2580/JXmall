@@ -4,12 +4,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 import com.lee.jxmall.member.feign.CouponFeignService;
+import com.lee.jxmall.member.vo.MemberRegistVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lee.jxmall.member.entity.MemberEntity;
 import com.lee.jxmall.member.service.MemberService;
@@ -42,6 +39,22 @@ public class MemberController {
         R r = couponFeignService.memberCoupon();
         //前面是本地查询到的，后面是远程服务查询到的
         return R.ok().put("member",memberEntity).put("coupon",r.get("coupon"));
+    }
+
+    /**
+     * 注册会员信息
+     * @param vo
+     * @return
+     */
+    @PostMapping("/list")
+    public R regist(@RequestBody MemberRegistVo vo){
+        try {
+            memberService.regist(vo);
+        }catch (Exception e){
+
+        }
+
+        return R.ok();
     }
 
     /**
