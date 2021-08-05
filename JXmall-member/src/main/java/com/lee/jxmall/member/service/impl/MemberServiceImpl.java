@@ -62,12 +62,13 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
 
         // 密码要加密存储
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        entity.setPassword(bCryptPasswordEncoder.encode(MuserRegisterVo.getPassword()));
+        entity.setPassword(bCryptPasswordEncoder.encode(vo.getPassword()));
+
         // 其他的默认信息
-        entity.setCity("湖南 长沙");
+        entity.setCity("外星系 未知地");
         entity.setCreateTime(new Date());
         entity.setStatus(0);
-        entity.setNickname(userRegisterVo.getUserName());
+        entity.setNickname(vo.getUserName());
         entity.setBirth(new Date());
         entity.setEmail("xxx@gmail.com");
         entity.setGender(1);

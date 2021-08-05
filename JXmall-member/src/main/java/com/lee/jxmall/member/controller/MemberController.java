@@ -3,6 +3,9 @@ package com.lee.jxmall.member.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.lee.common.exception.BizCodeEnum;
+import com.lee.jxmall.member.exception.PhoneExistException;
+import com.lee.jxmall.member.exception.UsernameExistException;
 import com.lee.jxmall.member.feign.CouponFeignService;
 import com.lee.jxmall.member.vo.MemberRegistVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +49,16 @@ public class MemberController {
      * @param vo
      * @return
      */
-    @PostMapping("/list")
+    @PostMapping("/regist")
     public R regist(@RequestBody MemberRegistVo vo){
         try {
             memberService.regist(vo);
-        }catch (Exception e){
-
+        } catch (UsernameExistException userException) {
+            //用户已存在
+            return R.error(BizCodeEnum.USER_EXIST_EXCEPTION.getCode(), BizCodeEnum.USER_EXIST_EXCEPTION.getMsg());
+        } catch (PhoneExistException phoneException) {
+            // 手机已经注册
+            return R.error(BizCodeEnum.PHONE_EXIST_EXCEPTION.getCode(), BizCodeEnum.PHONE_EXIST_EXCEPTION.getMsg());
         }
 
         return R.ok();

@@ -1,8 +1,10 @@
 package com.lee.jxmall.auth.controller;
 
+import com.alibaba.fastjson.TypeReference;
 import com.lee.common.constant.AuthServerConstant;
 import com.lee.common.exception.BizCodeEnum;
 import com.lee.common.utils.R;
+import com.lee.jxmall.auth.fegin.MemberFeignService;
 import com.lee.jxmall.auth.fegin.ThirdPartFeignService;
 import com.lee.jxmall.auth.vo.UserRegisterVo;
 import lombok.extern.slf4j.Slf4j;
@@ -38,13 +40,16 @@ public class LoginController {
     @Autowired
     ThirdPartFeignService thirdPartFeignService;
 
+    @Autowired
+    MemberFeignService memberFeignService;
+
     /**
      * 进行短信验证码发送
      * @param phone
      * @return
      */
     @ResponseBody
-    @GetMapping("/sms/snedcode")
+    @GetMapping("/sms/regsendcode")
     public R sendCode(@RequestParam("phone") String phone){
 
         //TODO 1、接口防刷
@@ -61,7 +66,7 @@ public class LoginController {
 
         //2、验证码再次调用，redis缓存 key-phone value-code  sms:code:电话号
         // 生成验证码
-        String code = UUID.randomUUID().toString().substring(0, 5);
+        String code = UUID.randomUUID().toString().substring(0, 6);
         String redis_code = code + "_" + System.currentTimeMillis();
         // redis缓存验证码
         stringRedisTemplate.opsForValue().set(AuthServerConstant.SMS_CODE_CACHE_PREFIX + phone, redis_code , 10, TimeUnit.MINUTES);
@@ -74,7 +79,7 @@ public class LoginController {
     }
 
     /**
-     *
+     * 注册功能
      * @param registerVo
      * @param result
      * @param redirectAttributes 模拟重定向携带数据
@@ -107,16 +112,16 @@ public class LoginController {
             stringRedisTemplate.delete(AuthServerConstant.SMS_CODE_CACHE_PREFIX + registerVo.getPhone());
 
             //2.1.2 远程调用会员服务注册
-            R r = memberFeignService.register(registerVo);
+            R r = memberFeignService.regist(registerVo);
             if (r.getCode() == 0) {
                 //调用成功，重定向登录页
-                return "redirect:http://auth.gulimall.com/login.html";
+                return "redirect:http://auth.jxmall.com/login.html";
             } else {
                 //调用失败，返回注册页并显示错误信息
-                String msg = (String) r.get("msg");
-                errors.put("msg", msg);
+                errors.put("msg", r.getData(new TypeReference<String>() {
+                }));
                 redirectAttributes.addFlashAttribute("errors", errors);
-                return "redirect:http://auth.gulimall.com/reg.html";
+                return "redirect:http://auth.jxmall.com/reg.html";
             }
         } else {
             //2.2 验证码错误

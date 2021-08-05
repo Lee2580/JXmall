@@ -21,7 +21,7 @@ public class SmsComponent {
     private String smsSignId;
     private String templateId;
 
-    public void sendSmsCode(String phone,String code){
+    public String sendSmsCode(String phone,String code){
 
         String method = "POST";
 
@@ -35,6 +35,7 @@ public class SmsComponent {
         querys.put("templateId", templateId);
         Map<String, String> bodys = new HashMap<String, String>();
 
+        HttpResponse response = null;
         try {
             /**
              * 重要提示如下:
@@ -45,12 +46,16 @@ public class SmsComponent {
              * 相应的依赖请参照
              * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/pom.xml
              */
-            HttpResponse response = HttpUtils.doPost(host, path, method, headers, querys, bodys);
+            response = HttpUtils.doPost(host, path, method, headers, querys, bodys);
             System.out.println(response.toString());
             //获取response的body
-            System.out.println(EntityUtils.toString(response.getEntity()));
+            //System.out.println(EntityUtils.toString(response.getEntity()));
+            if (response.getStatusLine().getStatusCode() == 200) {
+                return EntityUtils.toString(response.getEntity());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return "fail_" + response.getStatusLine().getStatusCode();
     }
 }
