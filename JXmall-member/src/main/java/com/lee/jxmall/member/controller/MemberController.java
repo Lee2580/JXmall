@@ -9,6 +9,7 @@ import com.lee.jxmall.member.exception.UsernameExistException;
 import com.lee.jxmall.member.feign.CouponFeignService;
 import com.lee.jxmall.member.vo.MemberLoginVo;
 import com.lee.jxmall.member.vo.MemberRegistVo;
+import com.lee.jxmall.member.vo.SocialUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,23 @@ public class MemberController {
         return R.ok().put("member",memberEntity).put("coupon",r.get("coupon"));
     }
 
+
+    /**
+     * 社交登录
+     * @param socialUser
+     * @return
+     */
+    @PostMapping("/login")
+    public R login(@RequestBody SocialUser socialUser) {
+        MemberEntity entity=memberService.login(socialUser);
+
+        if (entity!=null){
+            return R.ok();
+        }else {
+            return R.error(BizCodeEnum.LOGINUSER_PASSWORD_ERROR.getCode(), BizCodeEnum.LOGINUSER_PASSWORD_ERROR.getMsg());
+        }
+    }
+
     /**
      * 登录
      * @param loginVo
@@ -60,7 +78,6 @@ public class MemberController {
             return R.error(BizCodeEnum.LOGINUSER_PASSWORD_ERROR.getCode(), BizCodeEnum.LOGINUSER_PASSWORD_ERROR.getMsg());
         }
     }
-
 
     /**
      * 注册会员信息

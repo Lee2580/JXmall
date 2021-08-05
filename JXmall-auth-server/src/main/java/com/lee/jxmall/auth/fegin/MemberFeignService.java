@@ -1,6 +1,7 @@
 package com.lee.jxmall.auth.fegin;
 
 import com.lee.common.utils.R;
+import com.lee.jxmall.auth.vo.SocialUser;
 import com.lee.jxmall.auth.vo.UserLoginVo;
 import com.lee.jxmall.auth.vo.UserRegisterVo;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -20,4 +21,7 @@ public interface MemberFeignService {
      */
     @PostMapping("/member/member/login")
     R login(@RequestBody UserLoginVo loginVo);
+
+    @PostMapping("/member/member//login")
+    R login(@RequestBody SocialUser socialUser);
 }

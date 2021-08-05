@@ -9,7 +9,7 @@ import lombok.Data;
 
 /**
  * 会员
- * 
+ *
  * @author lee
  * @email 1114862851@qq.com
  * @date 2021-07-21 14:40:29
@@ -92,6 +92,7 @@ public class MemberEntity implements Serializable {
 	 * 注册时间
 	 */
 	private Date createTime;
+
 	/**
 	 * 社交账号ID
 	 */
