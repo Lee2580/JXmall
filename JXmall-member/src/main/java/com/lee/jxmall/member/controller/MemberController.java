@@ -7,6 +7,7 @@ import com.lee.common.exception.BizCodeEnum;
 import com.lee.jxmall.member.exception.PhoneExistException;
 import com.lee.jxmall.member.exception.UsernameExistException;
 import com.lee.jxmall.member.feign.CouponFeignService;
+import com.lee.jxmall.member.vo.MemberLoginVo;
 import com.lee.jxmall.member.vo.MemberRegistVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,23 @@ public class MemberController {
         //前面是本地查询到的，后面是远程服务查询到的
         return R.ok().put("member",memberEntity).put("coupon",r.get("coupon"));
     }
+
+    /**
+     * 登录
+     * @param loginVo
+     * @return
+     */
+    @PostMapping("/login")
+    public R login(@RequestBody MemberLoginVo loginVo) {
+        MemberEntity entity=memberService.login(loginVo);
+
+        if (entity!=null){
+            return R.ok();
+        }else {
+            return R.error(BizCodeEnum.LOGINUSER_PASSWORD_ERROR.getCode(), BizCodeEnum.LOGINUSER_PASSWORD_ERROR.getMsg());
+        }
+    }
+
 
     /**
      * 注册会员信息

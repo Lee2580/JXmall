@@ -6,6 +6,7 @@ import com.lee.common.exception.BizCodeEnum;
 import com.lee.common.utils.R;
 import com.lee.jxmall.auth.fegin.MemberFeignService;
 import com.lee.jxmall.auth.fegin.ThirdPartFeignService;
+import com.lee.jxmall.auth.vo.UserLoginVo;
 import com.lee.jxmall.auth.vo.UserRegisterVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -42,6 +40,30 @@ public class LoginController {
 
     @Autowired
     MemberFeignService memberFeignService;
+
+    /**
+     * 登录功能
+     *  传的是 K-V ，不需要加注解
+     * @param vo
+     * @param redirectAttributes
+     * @return
+     */
+    @PostMapping("/login")
+    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes){
+        // 远程登录
+        R r = memberFeignService.login(vo);
+
+        if (r.getCode() == 0) {
+            return "redirect:http://jxmall.com/";
+        }else {// 登录失败重回登录页面，携带错误信息
+            String msg = (String) r.get("msg");
+            Map<String, String> errors = new HashMap<>();
+            errors.put("msg", msg);
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:http://auth.jxmall.com/login.html";
+        }
+    }
+
 
     /**
      * 进行短信验证码发送
@@ -118,7 +140,7 @@ public class LoginController {
                 return "redirect:http://auth.jxmall.com/login.html";
             } else {
                 //调用失败，返回注册页并显示错误信息
-                errors.put("msg", r.getData(new TypeReference<String>() {
+                errors.put("msg", r.getData("msg",new TypeReference<String>() {
                 }));
                 redirectAttributes.addFlashAttribute("errors", errors);
                 return "redirect:http://auth.jxmall.com/reg.html";
@@ -129,7 +151,5 @@ public class LoginController {
             redirectAttributes.addFlashAttribute("errors", errors);
             return "redirect:http://auth.jxmall.com/reg.html";
         }
-
     }
-
 }

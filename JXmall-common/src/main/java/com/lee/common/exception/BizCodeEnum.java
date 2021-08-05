@@ -26,7 +26,7 @@ public enum BizCodeEnum {
     SMS_SEND_CODE_EXCEPTION(10403, "短信发送失败"),
     USER_EXIST_EXCEPTION(15001, "用户已经存在"),
     PHONE_EXIST_EXCEPTION(15002, "手机号已经存在"),
-    LOGINACTT_PASSWORD_ERROR(15003, "账号或密码错误"),
+    LOGINUSER_PASSWORD_ERROR(15003, "账号或密码错误"),
     SOCIALUSER_LOGIN_ERROR(15004, "社交账号登录失败"),
     NOT_STOCK_EXCEPTION(21000, "商品库存不足"),
     PRODUCT_UP_EXCEPTION(11000, "商品上架异常");

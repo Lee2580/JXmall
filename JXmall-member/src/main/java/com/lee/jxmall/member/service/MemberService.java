@@ -5,6 +5,7 @@ import com.lee.common.utils.PageUtils;
 import com.lee.jxmall.member.entity.MemberEntity;
 import com.lee.jxmall.member.exception.PhoneExistException;
 import com.lee.jxmall.member.exception.UsernameExistException;
+import com.lee.jxmall.member.vo.MemberLoginVo;
 import com.lee.jxmall.member.vo.MemberRegistVo;
 
 import java.util.Map;
@@ -25,5 +26,7 @@ public interface MemberService extends IService<MemberEntity> {
     void checkPhoneUnique(String phone) throws PhoneExistException;
 
     void checkUsernameUnique(String username) throws UsernameExistException;
+
+    MemberEntity login(MemberLoginVo loginVo);
 }
 

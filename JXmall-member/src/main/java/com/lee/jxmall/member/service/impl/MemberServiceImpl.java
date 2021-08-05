@@ -4,6 +4,7 @@ import com.lee.jxmall.member.dao.MemberLevelDao;
 import com.lee.jxmall.member.entity.MemberLevelEntity;
 import com.lee.jxmall.member.exception.PhoneExistException;
 import com.lee.jxmall.member.exception.UsernameExistException;
+import com.lee.jxmall.member.vo.MemberLoginVo;
 import com.lee.jxmall.member.vo.MemberRegistVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -94,6 +95,33 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         if (count>0) {
             throw new UsernameExistException();
         }
+    }
+
+    /**
+     * 登录方法
+     * @param loginVo
+     * @return
+     */
+    @Override
+    public MemberEntity login(MemberLoginVo loginVo) {
+
+        String loginUser = loginVo.getLoginUser();
+        String password = loginVo.getPassword();
+        //以用户名或电话号登录的进行查询
+        MemberDao memberDao = this.baseMapper;
+        MemberEntity entity = memberDao.selectOne(new QueryWrapper<MemberEntity>().
+                eq("username", loginUser).or().eq("mobile", loginUser));
+
+        if (entity!=null){
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            //密码匹配
+            boolean matches = bCryptPasswordEncoder.matches(password, entity.getPassword());
+            if (matches){
+                entity.setPassword("");
+                return entity;
+            }
+        }
+        return null;
     }
 
 }
