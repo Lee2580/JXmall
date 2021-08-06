@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: jxmall-order
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.79.10:8848
+        namespace: 15f364dc-8a2d-42ce-a6a1-70c7fe4ccace
+

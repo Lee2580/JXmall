@@ -88,3 +88,9 @@ spring:
           uri: lb://jxmall-auth-server
           predicates:
             - Host=auth.jxmall.com
+
+        # auth
+        - id: jxmall_cart
+          uri: lb://jxmall-cart
+          predicates:
+            - Host=cart.jxmall.com
