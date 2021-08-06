@@ -21,6 +21,7 @@
         <module>JXmall-gateway</module>
         <module>JXmall-third-paty</module>
         <module>JXmall-search</module>
+        <module>JXmall-auth-server</module>
     </modules>
 
 </project>
