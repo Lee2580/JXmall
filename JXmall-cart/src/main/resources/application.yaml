@@ -19,3 +19,10 @@ spring:
     host: 192.168.79.10
     port: 6379
     password: li15854198694
+
+# 自定义线程池配置
+jxmall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10
