@@ -58,7 +58,7 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * 操作购物车
+     * 将商品添加到购物车
      * @param skuId
      * @param num
      * @return
@@ -116,6 +116,22 @@ public class CartServiceImpl implements CartService {
 
             return cartItemVo;
         }
+    }
+
+    /**
+     * 获取购物车中某个购物项
+     * @param skuId
+     * @return
+     */
+    @Override
+    public CartItemVo getCartItem(Long skuId) {
+
+        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
+
+        String s = (String) cartOps.get(skuId.toString());
+        CartItemVo cartItemVo = JSON.parseObject(s, CartItemVo.class);
+
+        return cartItemVo;
     }
 
 }
