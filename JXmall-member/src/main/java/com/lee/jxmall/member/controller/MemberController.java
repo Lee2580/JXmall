@@ -52,12 +52,13 @@ public class MemberController {
      * @param socialUser
      * @return
      */
-    @PostMapping("/login")
-    public R login(@RequestBody SocialUser socialUser) {
+    @PostMapping("/oauth2/login")
+    public R oauthLogin(@RequestBody SocialUser socialUser) {
         MemberEntity entity=memberService.login(socialUser);
 
         if (entity!=null){
-            return R.ok();
+            //登录成功
+            return R.ok().setData(entity);
         }else {
             return R.error(BizCodeEnum.LOGINUSER_PASSWORD_ERROR.getCode(), BizCodeEnum.LOGINUSER_PASSWORD_ERROR.getMsg());
         }
@@ -73,7 +74,7 @@ public class MemberController {
         MemberEntity entity=memberService.login(loginVo);
 
         if (entity!=null){
-            return R.ok();
+            return R.ok().setData(entity);
         }else {
             return R.error(BizCodeEnum.LOGINUSER_PASSWORD_ERROR.getCode(), BizCodeEnum.LOGINUSER_PASSWORD_ERROR.getMsg());
         }

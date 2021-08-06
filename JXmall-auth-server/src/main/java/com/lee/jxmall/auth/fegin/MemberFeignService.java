@@ -22,6 +22,6 @@ public interface MemberFeignService {
     @PostMapping("/member/member/login")
     R login(@RequestBody UserLoginVo loginVo);
 
-    @PostMapping("/member/member//login")
-    R login(@RequestBody SocialUser socialUser);
+    @PostMapping("/member/member/oauth2/login")
+    R oauthLogin(@RequestBody SocialUser socialUser) throws Exception;
 }

@@ -1,12 +1,15 @@
-package com.lee.jxmall.auth.vo;
+package com.lee.common.to;
 
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 实现序列化接口
+ */
 @Data
-public class MemberRsepVo {
+public class MemberRespVo implements Serializable{
 
     private Long id;
     /**

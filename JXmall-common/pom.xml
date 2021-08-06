@@ -81,6 +81,18 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.4.3</version>
         </dependency>
+        <!-- redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>2.5.2</version>
+        </dependency>
+        <!--spring-session整合redis，完成session共享问题-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+            <version>2.5.1</version>
+        </dependency>
         <!--Lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>

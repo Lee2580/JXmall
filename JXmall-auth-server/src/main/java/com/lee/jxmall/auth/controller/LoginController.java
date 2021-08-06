@@ -3,6 +3,7 @@ package com.lee.jxmall.auth.controller;
 import com.alibaba.fastjson.TypeReference;
 import com.lee.common.constant.AuthServerConstant;
 import com.lee.common.exception.BizCodeEnum;
+import com.lee.common.to.MemberRespVo;
 import com.lee.common.utils.R;
 import com.lee.jxmall.auth.fegin.MemberFeignService;
 import com.lee.jxmall.auth.fegin.ThirdPartFeignService;
@@ -17,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +44,23 @@ public class LoginController {
     MemberFeignService memberFeignService;
 
     /**
+     * 登录页跳转
+     * @param session
+     * @return
+     */
+    @GetMapping({"/login.html","/","/index","/index.html"})
+    public String loginPage(HttpSession session){
+        // 从会话从获取loginUser
+        Object attribute = session.getAttribute(AuthServerConstant.LOGIN_USER);
+        System.out.println("attribute:"+attribute);
+        if(attribute == null){
+            return "login";
+        }
+        System.out.println("已登陆，重定向到首页");
+        return "redirect:http://jxmall.com";
+    }
+
+    /**
      * 登录功能
      *  传的是 K-V ，不需要加注解
      * @param vo
@@ -49,13 +68,20 @@ public class LoginController {
      * @return
      */
     @PostMapping("/login")
-    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes){
+    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes, HttpSession session){
         // 远程登录
         R r = memberFeignService.login(vo);
 
         if (r.getCode() == 0) {
+            // 登录成功
+            MemberRespVo respVo = r.getData("data", new TypeReference<MemberRespVo>() {});
+            // 放入session  // key为loginUser
+            session.setAttribute(AuthServerConstant.LOGIN_USER, respVo);
+            log.info("\n欢迎 [" + respVo.getUsername() + "] 登录");
+            // 登录成功重定向到首页
             return "redirect:http://jxmall.com/";
-        }else {// 登录失败重回登录页面，携带错误信息
+        }else {
+            // 登录失败重回登录页面，携带错误信息
             String msg = (String) r.get("msg");
             Map<String, String> errors = new HashMap<>();
             errors.put("msg", msg);

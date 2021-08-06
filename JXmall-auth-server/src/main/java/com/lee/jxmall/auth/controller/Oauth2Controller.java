@@ -6,7 +6,7 @@ import com.lee.common.constant.AuthServerConstant;
 import com.lee.common.utils.HttpUtils;
 import com.lee.common.utils.R;
 import com.lee.jxmall.auth.fegin.MemberFeignService;
-import com.lee.jxmall.auth.vo.MemberRsepVo;
+import com.lee.common.to.MemberRespVo;
 import com.lee.jxmall.auth.vo.SocialUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
@@ -43,8 +43,8 @@ public class Oauth2Controller {
         map.put("grant_type", "authorization_code");
         map.put("code", code);
         map.put("redirect_uri", "http://auth.jxmall.com/oauth2/gitee/success");
-        map.put("client_id", "2d65d241105e62c1f7dd4e532f408ad7e97207d4f879275c044501610368081f");
-        map.put("client_secret", "5a608cb0f3f61a2168bad88c20240ffec28ff03e476f6dd5bff06214d32b3cfd");
+        map.put("client_id", "1595881874");
+        map.put("client_secret", "862fbfacc15324b3f2f6e485d49fd546");
         Map<String, String> headers = new HashMap<>();
 
         //1、根据code换取AccessToken
@@ -58,9 +58,9 @@ public class Oauth2Controller {
 
             // 相当于知道了当前是那个用户
             // 1.如果用户是第一次进来     自动注册进来(为当前社交用户生成一个会员信息，以后这个账户就会关联这个账号)
-            R login = memberFeignService.login(socialUser);
+            R login = memberFeignService.oauthLogin(socialUser);
             if(login.getCode() == 0){
-                MemberRsepVo rsepVo = login.getData("data" ,new TypeReference<MemberRsepVo>() {});
+                MemberRespVo rsepVo = login.getData("data" ,new TypeReference<MemberRespVo>() {});
 
                 log.info("\n欢迎 [" + rsepVo.getUsername() + "] 使用社交账号登录");
                 // 第一次使用session 命令浏览器保存这个用户信息 JESSIONSEID 每次只要访问这个网站就会带上这个cookie
