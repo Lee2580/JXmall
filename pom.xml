@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.lee.JXmall</groupId>
+    <groupId>com.lee.jxmall</groupId>
     <artifactId>JXmall</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>JXmall</name>
@@ -22,6 +22,7 @@
         <module>JXmall-third-paty</module>
         <module>JXmall-search</module>
         <module>JXmall-auth-server</module>
+        <module>JXmall-sso-test</module>
     </modules>
 
 </project>
