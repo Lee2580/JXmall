@@ -1,0 +1,21 @@
+server:
+  port: 7800
+
+spring:
+  application:
+    name: jxmall-cart
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.79.10:8848
+
+  thymeleaf:
+    cache: false
+
+  session:
+    store-type: redis
+
+  redis:
+    host: 192.168.79.10
+    port: 6379
+    password: li15854198694

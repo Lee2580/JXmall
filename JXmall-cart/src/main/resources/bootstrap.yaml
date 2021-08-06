@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: jxmall-cart
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.79.10:8848
+        namespace: a422af0f-2a1c-45cc-aa32-5908741cb58c
