@@ -43,8 +43,8 @@ public class Oauth2Controller {
         map.put("grant_type", "authorization_code");
         map.put("code", code);
         map.put("redirect_uri", "http://auth.jxmall.com/oauth2/gitee/success");
-        map.put("client_id", "1595881874");
-        map.put("client_secret", "862fbfacc15324b3f2f6e485d49fd546");
+        map.put("client_id", "255462609");
+        map.put("client_secret", "6f0252053d5b3f7aa84deec0d330913f");
         Map<String, String> headers = new HashMap<>();
 
         //1、根据code换取AccessToken

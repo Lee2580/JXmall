@@ -89,7 +89,7 @@ spring:
           predicates:
             - Host=auth.jxmall.com
 
-        # auth
+        # cart
         - id: jxmall_cart
           uri: lb://jxmall-cart
           predicates:
