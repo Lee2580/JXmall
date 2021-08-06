@@ -5,6 +5,7 @@ import com.lee.common.constant.CartConstant;
 import com.lee.jxmall.cart.interceptor.CartInterceptor;
 import com.lee.jxmall.cart.service.CartService;
 import com.lee.jxmall.cart.vo.CartItemVo;
+import com.lee.jxmall.cart.vo.CartVo;
 import com.lee.jxmall.cart.vo.UserInfoTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,22 @@ public class CartController {
     CartService cartService;
 
     /**
+     * 商品是否选中
+     * @param skuId
+     * @param checked
+     * @return
+     */
+    @GetMapping("/checkItem")
+    public String checkItem(@RequestParam(value = "skuId") Long skuId,
+                            @RequestParam(value = "checked") Integer checked) {
+
+        cartService.checkItem(skuId, checked);
+
+        return "redirect:http://cart.jxmall.com/cart.html";
+
+    }
+
+    /**
      * 跳转购物车页面
      *      浏览器有一个cookie，里面有个user-key：标识用户身份，一个月后过期
      *      第一次使用购物车功能，都会给一个临时用户身份
@@ -33,10 +50,13 @@ public class CartController {
      * @return
      */
     @GetMapping("/cart.html")
-    public String cartListPage(HttpSession httpSession){
+    public String cartListPage(Model model) throws ExecutionException, InterruptedException {
 
         //1、快速获得用户信息， id：user-key
-        UserInfoTo userInfoTo = CartInterceptor.userInfoToThreadLocal.get();
+        //UserInfoTo userInfoTo = CartInterceptor.userInfoToThreadLocal.get();
+
+        CartVo cart = cartService.getCart();
+        model.addAttribute("cart",cart);
 
         return "cartList";
     }
