@@ -90,7 +90,13 @@ spring:
             - Host=auth.jxmall.com
 
         # cart
-        - id: jxmall_cart
+        - id: jxmall_cart_route
           uri: lb://jxmall-cart
           predicates:
             - Host=cart.jxmall.com
+
+        # order
+        - id: jxmall_order_route
+          uri: lb://jxmall-order
+          predicates:
+            - Host=order.jxmall.com
