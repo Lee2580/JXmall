@@ -10,6 +10,32 @@ spring:
     username: lee
     password: li15854198694
 
+  application:
+    name: jxmall-product
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.79.10:8848
+
+  # rabbitmq
+  rabbitmq:
+    host: 192.168.79.10
+    port: 5672
+    virtual-host: /
+    username: root
+    password: 123
+    # 开启发送端确认
+    publisher-returns: true
+    # 开启发送端消息抵达Broker确认
+    publisher-confirm-type: correlated
+    # 只要消息抵达Queue，就会异步发送优先回调returnfirm
+    template:
+      mandatory: true
+    #消息确认机制 --- 是否开启手ack动确认模式   manual 开启
+    listener:
+      simple:
+        acknowledge-mode: manual
+
 mybatis-plus:
   # sql映射文件
   mapper-locations: classpath:/mapper/**/*.xml
@@ -21,3 +47,4 @@ mybatis-plus:
 logging:
   level:
     com.lee: debug
+
