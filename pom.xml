@@ -23,6 +23,7 @@
         <module>JXmall-search</module>
         <module>JXmall-auth-server</module>
         <module>JXmall-sso-test</module>
+        <module>JXmall-cart</module>
     </modules>
 
 </project>
