@@ -17,6 +17,15 @@ spring:
   application:
     name: jxmall-member
 
+  # redis
+  redis:
+    host: 192.168.79.10
+    port: 6379
+    password: li15854198694
+
+  session:
+    store-type: redis
+
 mybatis-plus:
   # sql映射文件
   mapper-locations: classpath:/mapper/**/*.xml

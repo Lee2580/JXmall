@@ -11,11 +11,20 @@ spring:
     password: li15854198694
 
   application:
-    name: jxmall-product
+    name: jxmall-order
   cloud:
     nacos:
       discovery:
         server-addr: 192.168.79.10:8848
+
+  # redis
+  redis:
+    host: 192.168.79.10
+    port: 6379
+    password: li15854198694
+
+  session:
+    store-type: redis
 
   # rabbitmq
   rabbitmq:
@@ -35,6 +44,16 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
+
+  thymeleaf:
+    cache: false
+
+# 自定义线程池配置
+jxmall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10
 
 mybatis-plus:
   # sql映射文件

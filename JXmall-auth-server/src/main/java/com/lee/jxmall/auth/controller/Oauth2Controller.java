@@ -42,7 +42,7 @@ public class Oauth2Controller {
         Map<String, String> map = new HashMap<>();
         map.put("grant_type", "authorization_code");
         map.put("code", code);
-        map.put("redirect_uri", "http://auth.jxmall.com/oauth2/gitee/success");
+        map.put("redirect_uri", "http://auth.jxmall.com/oauth2/weibo/success");
         map.put("client_id", "255462609");
         map.put("client_secret", "6f0252053d5b3f7aa84deec0d330913f");
         Map<String, String> headers = new HashMap<>();
@@ -67,16 +67,16 @@ public class Oauth2Controller {
                 // 在发卡的时候扩大session作用域 (指定域名为父域名)
                 // TODO 1.默认发的当前域的session (需要解决子域session共享问题)
                 // TODO 2.使用JSON的方式序列化到redis
-                //				new Cookie("JSESSIONID","").setDomain("gulimall.com");
+                //				new Cookie("JSESSIONID","").setDomain("jxmall.com");
                 session.setAttribute(AuthServerConstant.LOGIN_USER, rsepVo);
 
                 //3、登录成功跳回首页
                 return "redirect:http://jxmall.com";
             }else{
-                return "redirect:http://auth.gulimall.com/login.html";
+                return "redirect:http://auth.jxmall.com/login.html";
             }
         }else{
-            return "redirect:http://auth.gulimall.com/login.html";
+            return "redirect:http://auth.jxmall.com/login.html";
         }
 
 
