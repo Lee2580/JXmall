@@ -47,7 +47,7 @@ public class CartServiceImpl implements CartService {
 
         String cartKey = "";
         if (userInfoTo.getUserId() != null) {
-            //kkmall:cart:1
+            //jxmall:cart:1
             cartKey = CART_PREFIX + userInfoTo.getUserId();
         } else {
             cartKey = CART_PREFIX + userInfoTo.getUserKey();
