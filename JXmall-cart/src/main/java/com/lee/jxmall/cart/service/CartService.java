@@ -3,6 +3,7 @@ package com.lee.jxmall.cart.service;
 import com.lee.jxmall.cart.vo.CartItemVo;
 import com.lee.jxmall.cart.vo.CartVo;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public interface CartService {
@@ -20,4 +21,6 @@ public interface CartService {
     void changeItemCount(Long skuId, Integer num);
 
     void deleteItem(Long skuId);
+
+    List<CartItemVo> getUserCartItems();
 }
