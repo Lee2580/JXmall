@@ -739,6 +739,8 @@
             $("#payPriceInput").val(total);
             // console.log(data)
             // layer.msg("总金额：" + total + "元")
+
+            //设置地址和收货人
             $("#recieveAddressEle").text(data.data.memberAddressVo.province + "  " + data.data.memberAddressVo.city + " " + data.data.memberAddressVo.detailAddress);
             $("#recieveEle").text(data.data.memberAddressVo.name)
         })
