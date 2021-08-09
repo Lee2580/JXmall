@@ -46,6 +46,9 @@ public class OrderConfirmVo {
     @Getter
     private String orderToken;
 
+    /**
+     * 表示库存
+     */
     @Setter
     @Getter
     Map<Long, Boolean> stocks;
@@ -71,6 +74,10 @@ public class OrderConfirmVo {
         return getTotal();
     }
 
+    /**
+     * 商品的总件数
+     * @return
+     */
     public Integer getCount() {
         Integer i = 0;
         if (items != null) {

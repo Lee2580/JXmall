@@ -39,7 +39,7 @@ public class OrderItemVo {
     /**
      * 是否有货
      */
-	private boolean hasStock;
+	//private boolean hasStock;
 
     /**
      * 重量

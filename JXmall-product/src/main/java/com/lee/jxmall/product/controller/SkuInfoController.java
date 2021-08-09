@@ -33,10 +33,11 @@ public class SkuInfoController {
      * @return
      */
     @GetMapping("/{skuId}/price")
-    public R getPrice (@PathVariable("skuId") Long skuId){
+    public BigDecimal getPrice (@PathVariable("skuId") Long skuId){
 
         SkuInfoEntity byId = skuInfoService.getById(skuId);
-        return R.ok().setData(byId.getPrice().toString());
+        //return R.ok().setData(byId.getPrice().toString());
+        return byId.getPrice();
     }
 
     /**

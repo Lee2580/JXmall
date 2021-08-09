@@ -1,13 +1,16 @@
 package com.lee.jxmall.order.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
 import com.lee.common.to.MemberRespVo;
 import com.lee.common.utils.R;
 import com.lee.jxmall.order.feign.CartFeignService;
 import com.lee.jxmall.order.feign.MemberFeignService;
+import com.lee.jxmall.order.feign.WmsFeignService;
 import com.lee.jxmall.order.interceptor.LoginUserInterceptor;
 import com.lee.jxmall.order.vo.MemberAddressVo;
 import com.lee.jxmall.order.vo.OrderConfirmVo;
 import com.lee.jxmall.order.vo.OrderItemVo;
+import com.lee.jxmall.order.vo.SkuStockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +47,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     ThreadPoolExecutor threadPoolExecutor;
+
+    @Autowired
+    WmsFeignService wmsFeignService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {

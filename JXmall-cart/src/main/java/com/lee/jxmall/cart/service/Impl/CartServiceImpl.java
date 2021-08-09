@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.lee.common.utils.R;
 import com.lee.jxmall.cart.config.ThreadPoolConfigProperties;
+import com.lee.jxmall.cart.exception.CartExceptionHandler;
 import com.lee.jxmall.cart.feign.ProductFeignService;
 import com.lee.jxmall.cart.interceptor.CartInterceptor;
 import com.lee.jxmall.cart.service.CartService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -243,24 +245,29 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartItemVo> getUserCartItems() {
 
+        List<CartItemVo> cartItemVoList = new ArrayList<>();
         UserInfoTo userInfoTo = CartInterceptor.userInfoToThreadLocal.get();
-        if (userInfoTo.getUserId() == null){
+        if (userInfoTo.getUserId() == null) {
             return null;
-        }else {
+        } else {
             String cartKey = CART_PREFIX + userInfoTo.getUserKey();
             List<CartItemVo> cartItems = getCartItems(cartKey);
             //获取所有被选中的购物项
-            List<CartItemVo> collect = cartItems.stream().filter(item -> item.getCheck()).map(item ->{
-                //远程查询最新价格
-                R price = productFeignService.getPrice(item.getSkuId());
-                //更新为最新价格
-                String data = (String) price.get("data");
-                item.setPrice(new BigDecimal(data));
-                return item;
-            }).collect(Collectors.toList());
-
-            return collect;
+            if (cartItems == null) {
+                throw new CartExceptionHandler();
+            }
+            //筛选出选中的
+            cartItemVoList = cartItems.stream()
+                    .filter(items -> items.getCheck())
+                    .map(item -> {
+                        //更新为最新的价格（查询数据库）
+                        BigDecimal price = productFeignService.getPrice(item.getSkuId());
+                        item.setPrice(price);
+                        return item;
+                    }).collect(Collectors.toList());
         }
+        return cartItemVoList;
+
     }
 
     /**
