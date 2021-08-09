@@ -153,24 +153,25 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
             // 说明这个用户注册过, 修改它的资料
             // 更新令牌
             memberEntity.setId(entity.getId());
-            memberEntity.setAccessToken(socialUser.getAccessToken());
-            memberEntity.setExpiresIn(socialUser.getExpiresIn());
+            memberEntity.setAccessToken(socialUser.getAccess_token());
+            memberEntity.setExpiresIn(socialUser.getExpires_in());
             // 更新
             dao.updateById(memberEntity);
 
-            entity.setAccessToken(socialUser.getAccessToken());
-            entity.setExpiresIn(socialUser.getExpiresIn());
+            entity.setAccessToken(socialUser.getAccess_token());
+            entity.setExpiresIn(socialUser.getExpires_in());
             entity.setPassword(null);
             return entity;
         }else {
             // 没有注册过
             // 2. 没有查到当前社交用户对应的记录 我们就需要注册一个
             HashMap<String, String> map = new HashMap<>();
-            map.put("access_token", socialUser.getAccessToken());
+            map.put("access_token", socialUser.getAccess_token());
             map.put("uid", socialUser.getUid());
             try {
                 // 3. 查询当前社交用户账号信息(昵称、性别、头像等)
-                HttpResponse response = HttpUtils.doGet("https://api.weibo.com", "/2/users/show.json", "get", new HashMap<>(), map);
+                HttpResponse response = HttpUtils.doGet("https://api.weibo.com", "/2/users/show.json", "get", new HashMap<String, String>(), map);
+
                 if (response.getStatusLine().getStatusCode() == 200) {
                     // 查询成功
                     String json = EntityUtils.toString(response.getEntity());
@@ -191,8 +192,8 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
             memberEntity.setBirth(new Date());
             memberEntity.setLevelId(1L);
             memberEntity.setSocialUid(socialUser.getUid());
-            memberEntity.setAccessToken(socialUser.getAccessToken());
-            memberEntity.setExpiresIn(socialUser.getExpiresIn());
+            memberEntity.setAccessToken(socialUser.getAccess_token());
+            memberEntity.setExpiresIn(socialUser.getExpires_in());
 
             // 注册 -- 登录成功
             dao.insert(memberEntity);

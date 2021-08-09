@@ -91,22 +91,23 @@
   						</div>
   					</b>
         <ul>
-            <li th:if="${session.loginUser} !=null">
-              <a>欢迎，[[$session.loginUser.nickname}]]</a>
+            <li th:if="${session.loginUser} != null">
+              <a>欢迎，[[${session.loginUser.nickname}]]</a>
               <a th:href="'http://member.jxmall.com/user/' + ${session.loginUser.id}+ '.html'">你好，[[${session.loginUser.nickname}]]</a>
             </li>
-            <li th:if="${session.loginUser} !=null">
+            <li th:if="${session.loginUser} != null">
               <a href="http://auth.jxmall.com/oauth2.0/logout">退出登录</a>
             </li>
-            <li th:if="${session.loginUser} ==null">
+            <li th:if="${session.loginUser} == null">
               <a href="http://auth.jxmall.com/login.html">你好，请登录 </a>
             </li>
-            <li th:if="${session.loginUser} ==null">
+            <li th:if="${session.loginUser} == null">
               <a href="http://auth.jxmall.com/reg.html" class="li_2">免费注册</a>
             </li>
           <span>|</span>
           <li th:if="${session.loginUser} !=null">
-            <a href="http://member.jxmall.com/memberOrder.html">我的订单</a>
+            <!-- <a href="http://member.jxmall.com/memberOrder.html">我的订单</a> -->
+            <a href="http://order.jxmall.com/list.html">我的订单</a>
           </li>
         </ul>
       </div>

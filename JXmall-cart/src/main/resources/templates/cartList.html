@@ -229,11 +229,11 @@
     }
 
     function toItem(skuId) {
-        window.location.href = "http://item.jxmall.com/" + skuId + ".html";
+        window.location.href = "http://item.jxmall.com:7300/" + skuId + ".html";
     }
 
     function login() {
-        var s = encodeURIComponent("http://cart.jxmall.com/cartList");
+        var s = encodeURIComponent("http://cart.jxmall.com:7800/cartList");
         window.location.href = "http://auth.jxmall.com/login.html";
     }
 
