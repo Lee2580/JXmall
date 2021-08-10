@@ -1,5 +1,6 @@
 package com.lee.jxmall.order.web;
 
+import com.lee.common.exception.NoStockException;
 import com.lee.jxmall.order.service.OrderService;
 import com.lee.jxmall.order.vo.OrderConfirmVo;
 import com.lee.jxmall.order.vo.OrderSubmitVo;
@@ -69,7 +70,7 @@ public class OrderWebController {
                 return "redirect:http://order.jxmall.com/toTrade";
             }
         } catch (Exception e) {
-            if (e instanceof NotStockException) {
+            if (e instanceof NoStockException) {
                 String message = e.getMessage();
                 redirectAttributes.addFlashAttribute("msg", message);
             }

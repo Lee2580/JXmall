@@ -1,9 +1,9 @@
 package com.lee.jxmall.ware.service.impl;
 
+import com.lee.common.exception.NoStockException;
 import com.lee.common.utils.R;
 import com.lee.jxmall.ware.entity.WareOrderTaskDetailEntity;
 import com.lee.jxmall.ware.entity.WareOrderTaskEntity;
-import com.lee.jxmall.ware.exception.NoStockException;
 import com.lee.jxmall.ware.feign.ProductFeignService;
 import com.lee.jxmall.ware.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;

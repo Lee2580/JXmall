@@ -21,6 +21,14 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  *          @RabbitListener：类+方法上 （监听哪些队列）
  *          @RabbitHandler：方法上  （重载区分不同的消息）
  *
+ *  本地事务失效问题
+ *      同一个对象内事务方法互调事务设置失效，原因是绕过了代理对象
+ *  解决：
+ *      1、引入aop，aop-starter; spring-boot-starter-aop引入aspectj
+ *      2、@EnableAspectjAutoProxy(exposeProxy = true)开启 aspectj动态代理功能，即使没有接口也可以创建动态代理
+ *              对外暴露代理对象
+ *      3、本类互调用代理对象
+ *
  */
 @EnableFeignClients
 @EnableRedisHttpSession

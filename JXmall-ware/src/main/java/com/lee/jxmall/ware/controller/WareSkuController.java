@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.lee.common.exception.BizCodeEnum;
-import com.lee.jxmall.ware.exception.NoStockException;
-import com.lee.jxmall.ware.vo.LockStockResult;
+import com.lee.common.exception.NoStockException;
 import com.lee.jxmall.ware.vo.SkuHasStockVo;
 import com.lee.jxmall.ware.vo.WareSkuLockVo;
 import org.springframework.beans.factory.annotation.Autowired;

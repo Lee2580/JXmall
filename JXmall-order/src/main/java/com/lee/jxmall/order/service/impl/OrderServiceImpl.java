@@ -2,18 +2,16 @@ package com.lee.jxmall.order.service.impl;
 
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.lee.common.exception.NoStockException;
 import com.lee.common.to.MemberRespVo;
 import com.lee.common.utils.R;
 import com.lee.jxmall.order.constant.OrderConstant;
-import com.lee.jxmall.order.dao.OrderItemDao;
 import com.lee.jxmall.order.entity.OrderItemEntity;
 import com.lee.jxmall.order.enume.OrderStatusEnum;
-import com.lee.jxmall.order.exception.NoStockException;
 import com.lee.jxmall.order.feign.CartFeignService;
 import com.lee.jxmall.order.feign.MemberFeignService;
 import com.lee.jxmall.order.feign.ProductFeignService;
 import com.lee.jxmall.order.feign.WmsFeignService;
-import com.lee.jxmall.order.feign.productFeignService;
 import com.lee.jxmall.order.interceptor.LoginUserInterceptor;
 import com.lee.jxmall.order.service.OrderItemService;
 import com.lee.jxmall.order.to.OrderCreateTo;
@@ -153,6 +151,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     /**
      * 下单功能，提交订单
+     *      分布式事务：网络问题+分布式机器
+     * @Transactional 本地事务，在分布式系统，只能控制自己的回滚，控制不了其他服务的回滚
      * @param submitVo
      * @return
      */
@@ -222,11 +222,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 }
             } else {
                 // 价格验证失败
-                submitVo.setCode(2);
+                responseVo.setCode(2);
             }
         }
-        return submitVo;
-
+        return responseVo;
     }
 
     /**
