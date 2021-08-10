@@ -1,6 +1,8 @@
 package com.lee.jxmall.ware.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lee.common.to.OrderTo;
+import com.lee.common.to.mq.StockLockedTo;
 import com.lee.common.utils.PageUtils;
 import com.lee.jxmall.ware.entity.WareSkuEntity;
 import com.lee.jxmall.ware.vo.SkuHasStockVo;
@@ -25,5 +27,11 @@ public interface WareSkuService extends IService<WareSkuEntity> {
     List<SkuHasStockVo> getSkuHasStock(List<Long> skuIds);
 
     Boolean orderLockStock(WareSkuLockVo lockVo);
+
+    void unlockStock(StockLockedTo to);
+
+    void unLockStock(Long skuId,Long wareId,Integer num,Long taskDetailId);
+
+    void unlockStock(OrderTo orderTo);
 }
 

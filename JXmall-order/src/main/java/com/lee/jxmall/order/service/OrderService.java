@@ -1,6 +1,7 @@
 package com.lee.jxmall.order.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lee.common.to.OrderTo;
 import com.lee.common.utils.PageUtils;
 import com.lee.jxmall.order.entity.OrderEntity;
 import com.lee.jxmall.order.vo.OrderConfirmVo;
@@ -24,5 +25,7 @@ public interface OrderService extends IService<OrderEntity> {
     OrderConfirmVo confirmOrder() throws ExecutionException, InterruptedException;
 
     SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo);
+
+    OrderEntity getOrderByStatus(String orderSn);
 }
 

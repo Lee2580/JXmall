@@ -211,9 +211,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 R r = wmsFeignService.orderLockStock(lockVo);
                 if (r.getCode() == 0) {
                     // 库存足够 锁定成功 给MQ发送订单消息，到时为支付则取消
-                   /* submitVo.setOrderEntity(order.getOrder());
+                    submitVo.setOrderEntity(order.getOrder());
                     rabbitTemplate.convertAndSend(this.eventExchange, this.createOrder, order.getOrder());
-*/
                     //3.保存订单
                     saveOrder(order);
                     //					int i = 10/0;
@@ -228,6 +227,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             }
         }
         return responseVo;
+    }
+
+    /**
+     * 返回订单状态
+     * @param orderSn
+     * @return
+     */
+    @Override
+    public OrderEntity getOrderByStatus(String orderSn) {
+        OrderEntity order_sn = this.getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+        return order_sn;
     }
 
     /**
