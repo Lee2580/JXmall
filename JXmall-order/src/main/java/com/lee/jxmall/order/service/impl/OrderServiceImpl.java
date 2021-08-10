@@ -4,6 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.lee.common.exception.NoStockException;
 import com.lee.common.to.MemberRespVo;
+import com.lee.common.to.OrderTo;
 import com.lee.common.utils.R;
 import com.lee.jxmall.order.constant.OrderConstant;
 import com.lee.jxmall.order.entity.OrderItemEntity;
@@ -16,6 +17,8 @@ import com.lee.jxmall.order.interceptor.LoginUserInterceptor;
 import com.lee.jxmall.order.service.OrderItemService;
 import com.lee.jxmall.order.to.OrderCreateTo;
 import com.lee.jxmall.order.vo.*;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -67,6 +70,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     OrderItemService orderItemService;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     private ThreadLocal<OrderSubmitVo> confirmVoThreadLocal =new ThreadLocal<>();
 
@@ -210,12 +216,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 // 远程锁库存
                 R r = wmsFeignService.orderLockStock(lockVo);
                 if (r.getCode() == 0) {
-                    // 库存足够 锁定成功 给MQ发送订单消息，到时为支付则取消
-                    submitVo.setOrderEntity(order.getOrder());
-                    rabbitTemplate.convertAndSend(this.eventExchange, this.createOrder, order.getOrder());
+                    // 库存足够 锁定成功
+                    responseVo.setOrder(order.getOrder());
+                    // 订单创建成功，发送消息给MQ
+                    rabbitTemplate.convertAndSend("order-event-exchange",
+                            "order.create.order", order.getOrder());
                     //3.保存订单
                     saveOrder(order);
-                    //					int i = 10/0;
+                    //int i = 10/0;
                 } else {
                     // 锁定失败
                     String msg = (String) r.get("msg");
@@ -238,6 +246,38 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     public OrderEntity getOrderByStatus(String orderSn) {
         OrderEntity order_sn = this.getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
         return order_sn;
+    }
+
+    /**
+     * 关闭订单
+     * @param orderEntity
+     */
+    @Override
+    public void closeOrder(OrderEntity orderEntity) {
+
+        //关闭订单之前先查询一下数据库，判断此订单状态是否已支付
+        OrderEntity orderInfo = this.getOne(new QueryWrapper<OrderEntity>().
+                eq("order_sn",orderEntity.getOrderSn()));
+
+        if (orderInfo.getStatus().equals(OrderStatusEnum.CREATE_NEW.getCode())) {
+            //代付款状态进行关单
+            OrderEntity orderUpdate = new OrderEntity();
+            orderUpdate.setId(orderInfo.getId());
+            orderUpdate.setStatus(OrderStatusEnum.CANCLED.getCode());
+            this.updateById(orderUpdate);
+
+            // 发送消息给MQ
+            OrderTo orderTo = new OrderTo();
+            BeanUtils.copyProperties(orderInfo, orderTo);
+
+            try {
+                //TODO 确保每个消息发送成功，给每个消息做好日志记录，(给数据库保存每一个详细信息)保存每个消息的详细信息
+                //TODO 定期扫描数据库，重新发送失败的消息
+                rabbitTemplate.convertAndSend("order-event-exchange",
+                        "order.release.other", orderTo);
+            } catch (Exception e) {
+            }
+        }
     }
 
     /**

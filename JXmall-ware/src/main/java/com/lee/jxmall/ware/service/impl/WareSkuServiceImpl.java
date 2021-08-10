@@ -316,7 +316,7 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
 
     /**
      * 防止订单服务卡顿，导致订单状态消息一直改不了，库存优先到期，查订单状态新建，什么都不处理
-     * 导致卡顿的订单，永远都不能解锁库存
+     *  导致卡顿的订单，永远都不能解锁库存
      * @param orderTo
      */
     @Transactional(rollbackFor = Exception.class)
@@ -326,9 +326,9 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         String orderSn = orderTo.getOrderSn();
         //查一下最新的库存解锁状态，防止重复解锁库存
         WareOrderTaskEntity orderTaskEntity = wareOrderTaskService.getOrderTaskByOrderSn(orderSn);
+        Long id = orderTaskEntity.getId();
 
         //按照工作单的id找到所有 没有解锁的库存，进行解锁
-        Long id = orderTaskEntity.getId();
         List<WareOrderTaskDetailEntity> list = wareOrderTaskDetailService.list(new QueryWrapper<WareOrderTaskDetailEntity>()
                 .eq("task_id", id).eq("lock_status", 1));
 

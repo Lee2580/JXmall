@@ -85,6 +85,9 @@ public class MyRabbitConfig {
              */
             @Override
             public void confirm(CorrelationData correlationData, boolean b, String s) {
+                /**
+                 * 服务器收到了
+                 */
                 System.out.println("correlationData ==> "+correlationData+"，ack ==> "+b+"，cause ==> "+s);
             }
         });
@@ -106,6 +109,9 @@ public class MyRabbitConfig {
              */
             @Override
             public void returnedMessage(ReturnedMessage returnedMessage) {
+                /**
+                 * 报错误了， 修改数据库当前消息状态-->错误
+                 */
                 System.out.println("失败的消息："+returnedMessage);
             }
         });

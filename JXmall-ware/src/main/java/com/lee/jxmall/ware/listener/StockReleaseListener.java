@@ -56,7 +56,8 @@ public class StockReleaseListener {
      */
     @RabbitHandler
     public void handleOrderCloseRelease(OrderTo orderTo, Message message, Channel channel) throws IOException {
-        System.out.println("******收到订单关闭，准备解锁库存的信息******订单号：" + orderTo.getOrderSn());
+
+        System.out.println("=====收到订单关闭，准备解锁库存的信息======订单号：" + orderTo.getOrderSn());
         try {
             wareSkuService.unlockStock(orderTo);
             // 手动删除消息
