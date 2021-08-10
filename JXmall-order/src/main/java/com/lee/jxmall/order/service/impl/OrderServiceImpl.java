@@ -5,14 +5,17 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.lee.common.to.MemberRespVo;
 import com.lee.common.utils.R;
 import com.lee.jxmall.order.constant.OrderConstant;
+import com.lee.jxmall.order.dao.OrderItemDao;
 import com.lee.jxmall.order.entity.OrderItemEntity;
 import com.lee.jxmall.order.enume.OrderStatusEnum;
+import com.lee.jxmall.order.exception.NoStockException;
 import com.lee.jxmall.order.feign.CartFeignService;
 import com.lee.jxmall.order.feign.MemberFeignService;
 import com.lee.jxmall.order.feign.ProductFeignService;
 import com.lee.jxmall.order.feign.WmsFeignService;
 import com.lee.jxmall.order.feign.productFeignService;
 import com.lee.jxmall.order.interceptor.LoginUserInterceptor;
+import com.lee.jxmall.order.service.OrderItemService;
 import com.lee.jxmall.order.to.OrderCreateTo;
 import com.lee.jxmall.order.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,7 @@ import com.lee.common.utils.Query;
 import com.lee.jxmall.order.dao.OrderDao;
 import com.lee.jxmall.order.entity.OrderEntity;
 import com.lee.jxmall.order.service.OrderService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -62,6 +66,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     ProductFeignService productFeignService;
+
+    @Autowired
+    OrderItemService orderItemService;
 
     private ThreadLocal<OrderSubmitVo> confirmVoThreadLocal =new ThreadLocal<>();
 
@@ -149,6 +156,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * @param submitVo
      * @return
      */
+    @Transactional
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo) {
 
@@ -182,11 +190,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             BigDecimal voPayPrice = submitVo.getPayPrice();
             if (Math.abs(payAmount.subtract(voPayPrice).doubleValue()) < 0.01) {
                 // 金额对比成功
-                // 3.保存订单 挪到后面
 
-                // 4.库存锁定
+                // 4.库存锁定   只要有异常回滚订单
                 WareSkuLockVo lockVo = new WareSkuLockVo();
                 lockVo.setOrderSn(order.getOrder().getOrderSn());
+                //要锁的订单项数据
                 List<OrderItemVo> locks = order.getOrderItems().stream().map(item -> {
                     OrderItemVo itemVo = new OrderItemVo();
                     // 锁定的skuId 这个skuId要锁定的数量
@@ -203,12 +211,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     // 库存足够 锁定成功 给MQ发送订单消息，到时为支付则取消
                     submitVo.setOrderEntity(order.getOrder());
                     rabbitTemplate.convertAndSend(this.eventExchange, this.createOrder, order.getOrder());
+
+                    //3.保存订单
                     saveOrder(order);
                     //					int i = 10/0;
                 } else {
                     // 锁定失败
                     String msg = (String) r.get("msg");
-                    throw new NotStockException(msg);
+                    throw new NoStockException(msg);
                 }
             } else {
                 // 价格验证失败
@@ -217,6 +227,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         }
         return submitVo;
 
+    }
+
+    /**
+     * 保存订单数据
+     * @param order
+     */
+    private void saveOrder(OrderCreateTo order) {
+
+        //获取订单信息
+        OrderEntity orderEntity = order.getOrder();
+        orderEntity.setModifyTime(new Date());
+        orderEntity.setCreateTime(new Date());
+        //保存订单
+        this.save(orderEntity);
+
+        //获取订单项信息
+        List<OrderItemEntity> orderItems = order.getOrderItems();
+        //批量保存订单项数据
+        orderItemService.saveBatch(orderItems);
     }
 
     /**

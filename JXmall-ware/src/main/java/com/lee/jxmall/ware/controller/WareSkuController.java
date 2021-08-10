@@ -1,10 +1,15 @@
 package com.lee.jxmall.ware.controller;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.lee.common.exception.BizCodeEnum;
+import com.lee.jxmall.ware.exception.NoStockException;
+import com.lee.jxmall.ware.vo.LockStockResult;
 import com.lee.jxmall.ware.vo.SkuHasStockVo;
+import com.lee.jxmall.ware.vo.WareSkuLockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +32,22 @@ import com.lee.common.utils.R;
 public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
+
+    /**
+     * 为订单锁定库存
+     * @param lockVo
+     * @return
+     */
+    @PostMapping("/lock/order")
+    public R orderLockStock(@RequestBody WareSkuLockVo lockVo){
+
+        try {
+            Boolean stock = wareSkuService.orderLockStock(lockVo);
+            return R.ok();
+        }catch (NoStockException e){
+            return R.error(BizCodeEnum.NOT_STOCK_EXCEPTION.getCode(),BizCodeEnum.NOT_STOCK_EXCEPTION.getMsg());
+        }
+    }
 
     /**
      * 查询sku是否有库存

@@ -1,11 +1,15 @@
 package com.lee.jxmall.ware.service.impl;
 
 import com.lee.common.utils.R;
+import com.lee.jxmall.ware.entity.WareOrderTaskDetailEntity;
+import com.lee.jxmall.ware.entity.WareOrderTaskEntity;
+import com.lee.jxmall.ware.exception.NoStockException;
 import com.lee.jxmall.ware.feign.ProductFeignService;
-import com.lee.jxmall.ware.vo.SkuHasStockVo;
+import com.lee.jxmall.ware.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +24,7 @@ import com.lee.jxmall.ware.dao.WareSkuDao;
 import com.lee.jxmall.ware.entity.WareSkuEntity;
 import com.lee.jxmall.ware.service.WareSkuService;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 
@@ -118,6 +123,96 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             return vo;
         }).collect(Collectors.toList());
         return collect;
+    }
+
+    /**
+     * 为某个订单锁定库存
+     *      默认只要是运行时异常都会回滚
+     * @param lockVo
+     * @return
+     */
+    @Transactional(rollbackFor = NoStockException.class)
+    @Override
+    public Boolean orderLockStock(WareSkuLockVo lockVo) {
+
+        /**
+         * 保存库存工作单详情信息
+         * 追溯
+         * 如果没有库存，就不会发送消息给mq
+         * 【不会进入save(WareOrderTaskDetailEntity)逻辑，也不会发送消息给mq，也不会锁定库存，也不会监听到解锁服务】
+         */
+        WareOrderTaskEntity wareOrderTaskEntity = new WareOrderTaskEntity();
+        wareOrderTaskEntity.setOrderSn(lockVo.getOrderSn());
+        wareOrderTaskEntity.setCreateTime(new Date());
+        wareOrderTaskService.save(wareOrderTaskEntity);
+
+        //1、按照下单的收货地址，找到一个就近仓库，锁定库存
+        //2、找到每个商品在哪个仓库都有库存
+        List<OrderItemVo> locks = lockVo.getLocks();
+
+        List<SkuWareHasStock> collect = locks.stream().map((item) -> {
+            SkuWareHasStock stock = new SkuWareHasStock();
+            Long skuId = item.getSkuId();
+            stock.setSkuId(skuId);
+            stock.setNum(item.getCount());
+
+            //查询这个商品在哪个仓库有库存 stock-锁定num > 0
+            List<Long> wareIdList = wareSkuDao.listWareIdHasSkuStock(skuId);
+            stock.setWareId(wareIdList);
+
+            return stock;
+        }).collect(Collectors.toList());
+
+        //2、锁定库存
+        for (SkuWareHasStock hasStock : collect) {
+            boolean skuStocked = false;
+            Long skuId = hasStock.getSkuId();
+            List<Long> wareIds = hasStock.getWareId();
+
+            if (CollectionUtils.isEmpty(wareIds)) {
+                //没有任何仓库有这个商品的库存
+                throw new NoStockException(skuId);
+            }
+
+            //1、如果每一个商品都锁定成功,将当前商品锁定了几件的工作单记录发给MQ
+            //2、锁定失败。前面保存的工作单信息都回滚了。发送出去的消息，即使要解锁库存，由于在数据库查不到指定的id，所有就不用解锁
+            for (Long wareId : wareIds) {
+                //锁定库存，根据几行受影响判断是否成功，成功就返回1，失败就返回0
+                Long count = wareSkuDao.lockSkuStock(skuId,wareId,hasStock.getNum());
+                // count==1表示锁定成功
+                if (count == 1) {
+                    //锁住了
+                    skuStocked = true;
+                    WareOrderTaskDetailEntity taskDetailEntity = WareOrderTaskDetailEntity.builder()
+                            .skuId(skuId)
+                            .skuName("")
+                            .skuNum(hasStock.getNum())
+                            .taskId(wareOrderTaskEntity.getId())
+                            .wareId(wareId)
+                            .lockStatus(1)
+                            .build();
+                    wareOrderTaskDetailService.save(taskDetailEntity);
+
+                    //TODO 告诉MQ库存锁定成功
+                    StockLockedTo lockedTo = new StockLockedTo();
+                    lockedTo.setId(wareOrderTaskEntity.getId());
+                    StockDetailTo detailTo = new StockDetailTo();
+                    BeanUtils.copyProperties(taskDetailEntity,detailTo);// 这里直接存entity。但是应该存id更好，数据最好来自DB
+                    lockedTo.setDetailTo(detailTo);
+                    rabbitTemplate.convertAndSend("stock-event-exchange","stock.locked",lockedTo);
+                    // 锁定成功返回
+                    break;
+                } else {
+                    //当前仓库锁失败，重试下一个仓库
+                }
+            }
+            if (skuStocked == false) {
+                //当前商品所有仓库都没有锁住
+                throw new NoStockException(skuId);
+            }
+        }
+        //3、肯定全部都是锁定成功的
+        return true;
     }
 
 }
