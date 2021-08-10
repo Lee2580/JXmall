@@ -16,7 +16,6 @@ import com.lee.jxmall.order.interceptor.LoginUserInterceptor;
 import com.lee.jxmall.order.service.OrderItemService;
 import com.lee.jxmall.order.to.OrderCreateTo;
 import com.lee.jxmall.order.vo.*;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -178,7 +177,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         // 原子验证令牌 删除令牌
         Long result = stringRedisTemplate.execute(new DefaultRedisScript<>(script, Long.class),
-                Arrays.asList(OrderConstant.USER_ORDER_TOKEN_PREFIX + MemberRespVo.getId()),
+                Arrays.asList(OrderConstant.USER_ORDER_TOKEN_PREFIX + memberResponseVo.getId()),
                 orderToken);
         if (result == 0L) {
             // 令牌验证失败
@@ -212,9 +211,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 R r = wmsFeignService.orderLockStock(lockVo);
                 if (r.getCode() == 0) {
                     // 库存足够 锁定成功 给MQ发送订单消息，到时为支付则取消
-                    submitVo.setOrderEntity(order.getOrder());
+                   /* submitVo.setOrderEntity(order.getOrder());
                     rabbitTemplate.convertAndSend(this.eventExchange, this.createOrder, order.getOrder());
-
+*/
                     //3.保存订单
                     saveOrder(order);
                     //					int i = 10/0;

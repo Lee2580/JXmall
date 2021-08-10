@@ -1,7 +1,7 @@
 package com.lee.jxmall.ware.config;
 
 import com.zaxxer.hikari.HikariDataSource;
-import io.seata.rm.datasource.DataSourceProxy;
+//import io.seata.rm.datasource.DataSourceProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 
-@Configuration
+//@Configuration
 public class MySeataConfig {
 
     @Autowired
@@ -23,6 +23,7 @@ public class MySeataConfig {
         if (StringUtils.hasText(dataSourceProperties.getName())) {
             dataSource.setPoolName(dataSourceProperties.getName());
         }
-        return new DataSourceProxy(dataSource);
+        //return new DataSourceProxy(dataSource);
+        return null;
     }
 }

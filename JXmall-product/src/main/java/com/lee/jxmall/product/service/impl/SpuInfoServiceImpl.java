@@ -13,7 +13,6 @@ import com.lee.jxmall.product.feign.SearchFeignService;
 import com.lee.jxmall.product.feign.WareFeignService;
 import com.lee.jxmall.product.service.*;
 import com.lee.jxmall.product.vo.*;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,7 +96,6 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
      * @Transactional 开启事务
      * @param vo
      */
-
     @Transactional
     @Override
     public void saveSpuInfo(SpuSaveVo vo) {
