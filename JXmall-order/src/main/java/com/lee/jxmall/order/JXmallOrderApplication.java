@@ -29,6 +29,17 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  *              对外暴露代理对象
  *      3、本类互调用代理对象
  *
+ *  Seata控制分布式事务
+ *      1、每个微服务数据库创建undo_log表
+ *      2、安装事务协调器
+ *      3、整合
+ *          1）、导入依赖spring-cloud-starter-alibaba-seata
+ *          2）、解压并启动seata-server    配置conf
+ *          3）、所有想要用到分布式事务的微服务使用seata
+ *              DataSourceProxy 代理数据源
+ *          4）、每个微服务都必须导入   registry.conf 和 file.conf
+ *      4、启动测试
+ *      5、给分布式大事务的入口标注 @GlobalTransactional ，远程的小事务用 @Transactional 即可
  */
 @EnableFeignClients
 @EnableRedisHttpSession

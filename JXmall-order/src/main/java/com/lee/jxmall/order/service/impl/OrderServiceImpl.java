@@ -16,6 +16,7 @@ import com.lee.jxmall.order.interceptor.LoginUserInterceptor;
 import com.lee.jxmall.order.service.OrderItemService;
 import com.lee.jxmall.order.to.OrderCreateTo;
 import com.lee.jxmall.order.vo.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -153,9 +154,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * 下单功能，提交订单
      *      分布式事务：网络问题+分布式机器
      * @Transactional 本地事务，在分布式系统，只能控制自己的回滚，控制不了其他服务的回滚
+     * @GlobalTransactional 高并发不适用，使用消息队列解锁，实现最终一致性
      * @param submitVo
      * @return
      */
+    //@GlobalTransactional
     @Transactional
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo) {

@@ -13,6 +13,7 @@ import com.lee.jxmall.product.feign.SearchFeignService;
 import com.lee.jxmall.product.feign.WareFeignService;
 import com.lee.jxmall.product.service.*;
 import com.lee.jxmall.product.vo.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,9 +93,11 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
      *      6.3）、sku的销售属性信息：pms_sku_sale_attr_value
      *      6.4）、sku的优惠、满减等信息；jxmall_sms->sms_sku_ladder\sms_sku_full_reduction\sms_member_price
      *
+     * @GlobalTransactional 使用saeta分布式事务
      * @Transactional 开启事务
      * @param vo
      */
+
     @Transactional
     @Override
     public void saveSpuInfo(SpuSaveVo vo) {
