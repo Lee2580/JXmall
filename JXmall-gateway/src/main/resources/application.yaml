@@ -100,3 +100,9 @@ spring:
           uri: lb://jxmall-order
           predicates:
             - Host=order.jxmall.com
+
+        # memeber
+        - id: jxmall_member_route
+          uri: lb://jxmall-member
+          predicates:
+            - Host=member.jxmall.com

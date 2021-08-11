@@ -26,6 +26,9 @@ spring:
   session:
     store-type: redis
 
+  thymeleaf:
+    cache: false
+
 mybatis-plus:
   # sql映射文件
   mapper-locations: classpath:/mapper/**/*.xml

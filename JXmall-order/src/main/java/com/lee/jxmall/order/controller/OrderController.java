@@ -39,6 +39,19 @@ public class OrderController {
     }
 
     /**
+     * 查询出当前用户的所有订单数据
+     * @RequestBody 方便以json方式传递
+     * @param params
+     * @return
+     */
+    @PostMapping("/listWithItem")
+    public R listWithItem(@RequestBody Map<String, Object> params){
+        PageUtils page = orderService.queryPageWithItem(params);
+
+        return R.ok().put("page", page);
+    }
+
+    /**
      * 列表
      */
     @RequestMapping("/list")
@@ -48,7 +61,6 @@ public class OrderController {
 
         return R.ok().put("page", page);
     }
-
 
     /**
      * 信息

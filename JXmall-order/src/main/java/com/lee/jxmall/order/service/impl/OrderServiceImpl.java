@@ -309,6 +309,38 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     }
 
     /**
+     * 查询当前用户的所有订单数据
+     * @param params
+     * @return
+     */
+    @Override
+    public PageUtils queryPageWithItem(Map<String, Object> params) {
+
+        MemberRespVo memberRespVo = LoginUserInterceptor.loginUser.get();
+
+        IPage<OrderEntity> page = this.page(
+                new Query<OrderEntity>().getPage(params),
+                // 查询这个用户的最新订单 [降序排序]
+                new QueryWrapper<OrderEntity>()
+                        .eq("member_id",memberRespVo.getId()).orderByDesc("id")
+        );
+
+        //遍历所有订单集合
+        List<OrderEntity> orderEntityList = page.getRecords().stream().map(order -> {
+            //根据订单号查询订单项里的数据
+            List<OrderItemEntity> orderItemEntities = orderItemService.list(new QueryWrapper<OrderItemEntity>()
+                    .eq("order_sn", order.getOrderSn()));
+
+            order.setItemEntities(orderItemEntities);
+            return order;
+        }).collect(Collectors.toList());
+
+        page.setRecords(orderEntityList);
+
+        return new PageUtils(page);
+    }
+
+    /**
      * 保存订单数据
      * @param order
      */
