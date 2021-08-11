@@ -48,6 +48,10 @@ spring:
   thymeleaf:
     cache: false
 
+  mvc:
+    format:
+      date: yyyy-MM-dd HH:mm:ss
+
 # 自定义线程池配置
 jxmall:
   thread:

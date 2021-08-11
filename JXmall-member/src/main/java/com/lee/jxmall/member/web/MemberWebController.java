@@ -1,6 +1,5 @@
 package com.lee.jxmall.member.web;
 
-import com.lee.common.utils.PageUtils;
 import com.lee.common.utils.R;
 import com.lee.jxmall.member.feign.OrderFeignService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,11 @@ public class MemberWebController {
 
     @RequestMapping("/memberOrder.html")
     public String memberOrder(
-            @RequestParam(value = "pageNum",required = false,defaultValue = "0") Integer pageNum,
+            @RequestParam(value = "pageNum",required = false,defaultValue = "1") Integer pageNum,
             Model model){
+
+        // 这里可以获取到支付宝给我们传来的所有数据
+        //request，验证签名
 
         Map<String, Object> params = new HashMap<>();
         params.put("page", pageNum.toString());

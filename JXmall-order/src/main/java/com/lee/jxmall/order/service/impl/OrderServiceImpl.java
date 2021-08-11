@@ -8,6 +8,7 @@ import com.lee.common.to.OrderTo;
 import com.lee.common.utils.R;
 import com.lee.jxmall.order.constant.OrderConstant;
 import com.lee.jxmall.order.entity.OrderItemEntity;
+import com.lee.jxmall.order.entity.PaymentInfoEntity;
 import com.lee.jxmall.order.enume.OrderStatusEnum;
 import com.lee.jxmall.order.feign.CartFeignService;
 import com.lee.jxmall.order.feign.MemberFeignService;
@@ -15,6 +16,7 @@ import com.lee.jxmall.order.feign.ProductFeignService;
 import com.lee.jxmall.order.feign.WmsFeignService;
 import com.lee.jxmall.order.interceptor.LoginUserInterceptor;
 import com.lee.jxmall.order.service.OrderItemService;
+import com.lee.jxmall.order.service.PaymentInfoService;
 import com.lee.jxmall.order.to.OrderCreateTo;
 import com.lee.jxmall.order.vo.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -73,6 +75,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    PaymentInfoService paymentInfoService;
 
     private ThreadLocal<OrderSubmitVo> confirmVoThreadLocal =new ThreadLocal<>();
 
@@ -339,6 +344,40 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         return new PageUtils(page);
     }
+
+    /**
+     * 处理支付宝的支付结果
+     * @param asyncVo
+     * @return
+     */
+    @Override
+    public String handlePayResult(PayAsyncVo asyncVo) {
+
+        //1、保存交易流水信息
+        PaymentInfoEntity paymentInfo = new PaymentInfoEntity();
+        paymentInfo.setOrderSn(asyncVo.getOut_trade_no());
+        paymentInfo.setAlipayTradeNo(asyncVo.getTrade_no());
+        paymentInfo.setTotalAmount(new BigDecimal(asyncVo.getBuyer_pay_amount()));
+        paymentInfo.setSubject(asyncVo.getBody());
+        paymentInfo.setPaymentStatus(asyncVo.getTrade_status());
+        paymentInfo.setCreateTime(new Date());
+        paymentInfo.setCallbackTime(asyncVo.getNotify_time());
+
+        //保存到数据库中
+        paymentInfoService.save(paymentInfo);
+
+        //2、修改订单状态
+        //获取当前状态
+        String tradeStatus = asyncVo.getTrade_status();
+        //支付成功
+        if (tradeStatus.equals("TRADE_SUCCESS") || tradeStatus.equals("TRADE_FINISHED")) {
+            //获取订单号
+            String orderSn = asyncVo.getOut_trade_no();
+            this.baseMapper.updateOrderStatus(orderSn,OrderStatusEnum.PAYED.getCode());
+        }
+        return "success";
+    }
+
 
     /**
      * 保存订单数据
