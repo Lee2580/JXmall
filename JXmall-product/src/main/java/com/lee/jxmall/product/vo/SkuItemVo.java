@@ -46,6 +46,6 @@ public class SkuItemVo {
     /**
      * 秒杀信息
      */
-    SeckillInfoVo seckillInfoVo;
+    SecKillInfoVo secKillInfoVo;
 
 }

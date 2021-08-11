@@ -114,3 +114,9 @@ spring:
           uri: lb://jxmall-member
           predicates:
             - Host=member.jxmall.com
+
+        # seckill
+        - id: jxmall_seckill_route
+          uri: lb://jxmall-seckill
+          predicates:
+            - Host=seckill.jxmall.com
