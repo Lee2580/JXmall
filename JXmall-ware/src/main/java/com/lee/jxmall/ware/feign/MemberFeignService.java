@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@FeignClient
+@FeignClient("jxmall-member")
 public interface MemberFeignService {
 
     @RequestMapping("member/memberreceiveaddress/info/{id}")
