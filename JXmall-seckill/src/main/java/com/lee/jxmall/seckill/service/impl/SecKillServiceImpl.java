@@ -104,6 +104,8 @@ public class SecKillServiceImpl implements SecKillService {
                 //准备hash操作，绑定hash
                 BoundHashOperations<String, Object, Object> operations = stringRedisTemplate.boundHashOps(SECKILL_CHARE_PREFIX);
                 session.getRelationSkus().stream().forEach(seckillSkuVo -> {
+                    //生成随机码
+                    String token = UUID.randomUUID().toString().replace("-", "");
                     String redisKey = seckillSkuVo.getPromotionSessionId().toString() + "-" + seckillSkuVo.getSkuId().toString();
                     if (!operations.hasKey(redisKey)) {
 
@@ -127,8 +129,6 @@ public class SecKillServiceImpl implements SecKillService {
                         redisTo.setEndTime(session.getEndTime().getTime());
 
                         //4、设置商品的随机码（防止恶意攻击）
-                        //生成随机码
-                        String token = UUID.randomUUID().toString().replace("-", "");
                         redisTo.setRandomCode(token);
 
                         //序列化json格式存入Redis中
