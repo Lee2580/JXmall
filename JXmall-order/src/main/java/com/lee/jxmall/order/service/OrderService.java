@@ -6,6 +6,7 @@ import com.lee.common.utils.PageUtils;
 import com.lee.jxmall.order.entity.OrderEntity;
 import com.lee.jxmall.order.vo.OrderConfirmVo;
 import com.lee.jxmall.order.vo.OrderSubmitVo;
+import com.lee.jxmall.order.vo.PayVo;
 import com.lee.jxmall.order.vo.SubmitOrderResponseVo;
 
 import java.util.Map;
@@ -29,5 +30,7 @@ public interface OrderService extends IService<OrderEntity> {
     OrderEntity getOrderByStatus(String orderSn);
 
     void closeOrder(OrderEntity orderEntity);
+
+    PayVo getOrderPay(String orderSn);
 }
 
