@@ -1,0 +1,18 @@
+server:
+  port: 7900
+
+spring:
+  application:
+    name: jxmall-seckill
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.79.10:8848
+
+  session:
+    store-type: redis
+
+  redis:
+    host: 192.168.79.10
+    port: 6379
+    password: li15854198694

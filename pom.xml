@@ -24,6 +24,7 @@
         <module>JXmall-auth-server</module>
         <module>JXmall-sso-test</module>
         <module>JXmall-cart</module>
+        <module>JXmall-seckill</module>
     </modules>
 
 </project>

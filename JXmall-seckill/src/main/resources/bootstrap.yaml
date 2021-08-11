@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: jxmall-seckill
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.79.10:8848
+        namespace: bfa1b0bc-c729-421f-bbab-86ef662b3d82
