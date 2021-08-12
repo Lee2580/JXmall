@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.lee.common.exception.NoStockException;
 import com.lee.common.to.MemberRespVo;
 import com.lee.common.to.OrderTo;
+import com.lee.common.to.mq.SecKillOrderTo;
 import com.lee.common.utils.R;
 import com.lee.jxmall.order.constant.OrderConstant;
 import com.lee.jxmall.order.entity.OrderItemEntity;
@@ -376,6 +377,48 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             this.baseMapper.updateOrderStatus(orderSn,OrderStatusEnum.PAYED.getCode());
         }
         return "success";
+    }
+
+    /**
+     * 创建秒杀单
+     * @param orderTo
+     */
+    @Override
+    public void createSecKillOrder(SecKillOrderTo orderTo) {
+
+        //TODO 保存订单信息
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderSn(orderTo.getOrderSn());
+        orderEntity.setMemberId(orderTo.getMemberId());
+        orderEntity.setCreateTime(new Date());
+        BigDecimal totalPrice = orderTo.getSeckillPrice().multiply(BigDecimal.valueOf(orderTo.getNum()));
+        orderEntity.setPayAmount(totalPrice);
+        orderEntity.setStatus(OrderStatusEnum.CREATE_NEW.getCode());
+
+        //保存订单
+        this.save(orderEntity);
+
+        //保存订单项信息
+        OrderItemEntity orderItem = new OrderItemEntity();
+        orderItem.setOrderSn(orderTo.getOrderSn());
+        orderItem.setRealAmount(totalPrice);
+        //TODO 获取当前SKU详细信息进行设置
+        orderItem.setSkuQuantity(orderTo.getNum());
+
+        //保存商品的spu信息
+        R spuInfo = productFeignService.getSpuInfoBySkuId(orderTo.getSkuId());
+        SpuInfoVo spuInfoData = spuInfo.getData(new TypeReference<SpuInfoVo>() {
+        });
+        orderItem.setSpuId(spuInfoData.getId());
+        orderItem.setSpuName(spuInfoData.getSpuName());
+        orderItem.setSpuBrand(spuInfoData.getBrandId().toString());
+        orderItem.setCategoryId(spuInfoData.getCatalogId());
+        orderItem.setPromotionAmount(new BigDecimal("0.0"));
+        orderItem.setCouponAmount(new BigDecimal("0.0"));
+        orderItem.setIntegrationAmount(new BigDecimal("0.0"));
+
+        //保存订单项数据
+        orderItemService.save(orderItem);
     }
 
 

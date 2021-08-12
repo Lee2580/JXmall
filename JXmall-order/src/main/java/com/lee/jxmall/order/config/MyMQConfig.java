@@ -113,4 +113,30 @@ public class MyMQConfig {
     }
 
 
+    /**
+     * 商品秒杀队列
+     * 作用：削峰，创建订单
+     */
+    @Bean
+    public Queue orderSecKillOrderQueue() {
+
+        Queue queue = new Queue("order.seckill.order.queue", true, false, false);
+        return queue;
+    }
+
+    /**
+     * 秒杀队列绑定关系
+     * @return
+     */
+    @Bean
+    public Binding orderSecKillOrderQueueBinding() {
+        //String destination, DestinationType destinationType, String exchange, String routingKey,
+        // 			Map<String, Object> arguments
+        return new Binding(
+                "order.seckill.order.queue",
+                Binding.DestinationType.QUEUE,
+                "order-event-exchange",
+                "order.seckill.order",
+                null);
+    }
 }

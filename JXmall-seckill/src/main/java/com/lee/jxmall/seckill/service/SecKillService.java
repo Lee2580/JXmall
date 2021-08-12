@@ -10,4 +10,6 @@ public interface SecKillService {
     List<SecKillSkuRedisTo> getCurrentSecKillSkus();
 
     SecKillSkuRedisTo getSkuSecKilInfo(Long skuId);
+
+    String kill(String killId, String key, Integer num) throws InterruptedException;
 }

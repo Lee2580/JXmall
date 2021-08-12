@@ -2,6 +2,7 @@ package com.lee.jxmall.order.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lee.common.to.OrderTo;
+import com.lee.common.to.mq.SecKillOrderTo;
 import com.lee.common.utils.PageUtils;
 import com.lee.jxmall.order.entity.OrderEntity;
 import com.lee.jxmall.order.vo.*;
@@ -33,5 +34,7 @@ public interface OrderService extends IService<OrderEntity> {
     PageUtils queryPageWithItem(Map<String, Object> params);
 
     String handlePayResult(PayAsyncVo asyncVo);
+
+    void createSecKillOrder(SecKillOrderTo orderTo);
 }
 
