@@ -10,12 +10,32 @@ spring:
     username: lee
     password: li15854198694
 
+  application:
+    name: jxmall-coupon
+
   cloud:
     nacos:
       discovery:
         server-addr: 192.168.79.10:8848
-  application:
-    name: jxmall-coupon
+
+    # 配置sentinel
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8080
+
+  # 服务追踪
+  zipkin:
+    base-url: http://192.168.79.10:9411/
+    # 关闭服务发现，否则SpringCloud会把zipkin的url当做服务名称
+    discoveryClientEnabled: false
+    # 设置使用 http 的方式传输数据
+    sender:
+      type: web
+  # 设置抽样采集率为 100%，默认为 0.1，即 10%
+  sleuth:
+    sampler:
+      probability: 1
 
 mybatis-plus:
   # sql映射文件
@@ -28,3 +48,8 @@ mybatis-plus:
 logging:
   level:
     com.lee: debug
+
+# 开启feign的sentinel功能
+feign:
+  sentinel:
+    enabled: true

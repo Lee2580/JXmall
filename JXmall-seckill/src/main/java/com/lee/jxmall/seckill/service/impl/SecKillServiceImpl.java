@@ -1,5 +1,9 @@
 package com.lee.jxmall.seckill.service.impl;
 
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -80,16 +84,30 @@ public class SecKillServiceImpl implements SecKillService {
     }
 
     /**
-     * 查询当前时间可以参与秒杀的商品信息
+     * 阻塞回调方法
+     * @param e
      * @return
      */
+    public List<SecKillSkuRedisTo> blockHandler(BlockException e) {
+        log.error("getCurrentSecKillSkus被限流了,{}",e.getMessage());
+        return null;
+    }
+
+    /**
+     * 查询当前时间可以参与秒杀的商品信息
+     *  @SentinelResource 这个注解设置之后，保护后，方法里的代码就不会执行
+     *      blockHandler：针对原方法被限流/降级/保护的回调
+     *      fallback：针对所有类型的异常
+     * @return
+     */
+    @SentinelResource(value = "getCurrentSecKillSkus",blockHandler = "blockHandler")
     @Override
     public List<SecKillSkuRedisTo> getCurrentSecKillSkus() {
 
         // 1、确定当前时间属于那个秒杀场次
         long time = System.currentTimeMillis();
         // 定义一段受保护的资源
-        //try (Entry entry = SphU.entry("seckillSkus")) {
+        try (Entry entry = SphU.entry("secKillSkus")) {
             //从Redis中查询到所有key以seckill:sessions开头的所有数据
             Set<String> keys = stringRedisTemplate.keys(SESSION_CACHE_PREFIX + "*");
             for (String key : keys) {
@@ -117,9 +135,9 @@ public class SecKillServiceImpl implements SecKillService {
                     break;
                 }
             }
-       /* } catch (BlockException e) {
+        } catch (BlockException e) {
             log.warn("资源被限流：" + e.getMessage());
-        }*/
+        }
         return null;
     }
 

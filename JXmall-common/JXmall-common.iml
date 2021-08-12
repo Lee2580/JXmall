@@ -62,6 +62,27 @@
     <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.68" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.68" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config:2021.1" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel:2021.1" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-transport-simple-http:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-transport-common:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-datasource-extension:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-annotation-aspectj:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-core:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.9.2" level="project" />
+    <orderEntry type="library" name="Maven: org.aspectj:aspectjweaver:1.9.2" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.cloud:spring-cloud-circuitbreaker-sentinel:2021.1" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-reactor-adapter:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-spring-webflux-adapter:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-spring-webmvc-adapter:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-parameter-flow-control:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-cluster-server-default:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-cluster-common-default:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.csp:sentinel-cluster-client-default:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.cloud:spring-cloud-alibaba-sentinel-datasource:2021.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-actuator:2.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.5.2" level="project" />
@@ -81,6 +102,34 @@
     <orderEntry type="library" name="Maven: io.micrometer:micrometer-core:1.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.hdrhistogram:HdrHistogram:2.1.12" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.latencyutils:LatencyUtils:2.0.3" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-starter-sleuth:2.2.8.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-aop:2.3.10.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-sleuth-core:2.2.8.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-context-slf4j:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-messaging:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-rpc:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-spring-web:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-http:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-spring-rabbit:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-kafka-clients:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-kafka-streams:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-httpclient:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-httpasyncclient:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-spring-webmvc:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-servlet:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.brave:brave-instrumentation-jms:5.12.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.reporter2:zipkin-reporter-metrics-micrometer:2.15.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-sleuth-zipkin:2.2.8.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-web:5.2.14.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-beans:5.2.14.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.zipkin2:zipkin:2.21.7" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.reporter2:zipkin-reporter:2.15.2" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.reporter2:zipkin-reporter-brave:2.15.2" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.reporter2:zipkin-sender-kafka:2.15.2" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.reporter2:zipkin-sender-activemq-client:2.15.2" level="project" />
+    <orderEntry type="library" name="Maven: io.zipkin.reporter2:zipkin-sender-amqp-client:2.15.2" level="project" />
     <orderEntry type="library" name="Maven: com.baomidou:mybatis-plus-boot-starter:3.4.3" level="project" />
     <orderEntry type="library" name="Maven: com.baomidou:mybatis-plus:3.4.3" level="project" />
     <orderEntry type="library" name="Maven: com.baomidou:mybatis-plus-extension:3.4.3" level="project" />
@@ -93,7 +142,6 @@
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-jdbc:2.4.5" level="project" />
     <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:3.4.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:5.3.6" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-beans:5.3.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-data-redis:2.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-redis:2.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-keyvalue:2.5.2" level="project" />
@@ -105,11 +153,8 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.26" level="project" />
     <orderEntry type="library" name="Maven: io.lettuce:lettuce-core:6.1.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.65.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.65.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.65.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.65.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.65.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-transport:4.1.65.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.65.Final" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.session:spring-session-data-redis:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.session:spring-session-core:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.3.8" level="project" />

@@ -8,6 +8,13 @@ spring:
     nacos:
       discovery:
         server-addr: 192.168.79.10:8848
+
+    # 配置sentinel
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8080
+
     alicloud:
       access-key: LTAI5t6wJkdRcNLopJhjiLpZ
       secret-key: KwltBcojsoKvPvR93k1aM0VpjGbkyu
@@ -21,3 +28,20 @@ spring:
         smsSignId: 2e65b1bb3d054466b82f0c9d125465e2
         templateId: 908e94ccf08b4476ba6c876d13f084ad
 
+  # 服务追踪
+  zipkin:
+    base-url: http://192.168.79.10:9411/
+    # 关闭服务发现，否则SpringCloud会把zipkin的url当做服务名称
+    discoveryClientEnabled: false
+    # 设置使用 http 的方式传输数据
+    sender:
+      type: web
+  # 设置抽样采集率为 100%，默认为 0.1，即 10%
+  sleuth:
+    sampler:
+      probability: 1
+
+# 开启feign的sentinel功能
+feign:
+  sentinel:
+    enabled: true

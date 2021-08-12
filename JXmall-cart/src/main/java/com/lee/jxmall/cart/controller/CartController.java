@@ -43,6 +43,7 @@ public class CartController {
      * @param skuId
      * @return
      */
+    @GetMapping("/deleteItem")
     public String deleteItem(@RequestParam("skuId") Long skuId){
 
         cartService.deleteItem(skuId);

@@ -250,7 +250,7 @@ public class CartServiceImpl implements CartService {
         if (userInfoTo.getUserId() == null) {
             return null;
         } else {
-            String cartKey = CART_PREFIX + userInfoTo.getUserKey();
+            String cartKey = CART_PREFIX + userInfoTo.getUserId();
             List<CartItemVo> cartItems = getCartItems(cartKey);
             //获取所有被选中的购物项
             if (cartItems == null) {

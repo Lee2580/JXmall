@@ -40,9 +40,11 @@
             </exclusions>
         </dependency>
 
+        <!--网关流控-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+            <version>2.2.6.RELEASE</version>
         </dependency>
 
         <dependency>
