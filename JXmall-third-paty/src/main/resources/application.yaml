@@ -16,17 +16,17 @@ spring:
         dashboard: localhost:8080
 
     alicloud:
-      access-key: LTAI5t6wJkdRcNLopJhjiLpZ
-      secret-key: KwltBcojsoKvPvR93k1aM0VpjGbkyu
+      access-key: 
+      secret-key: 
       oss:
-        endpoint: oss-cn-qingdao.aliyuncs.com
-        bucket: jxmall-lee
+        endpoint: 
+        bucket: 
       sms:
-        host: https://gyytz.market.alicloudapi.com
-        path: /sms/smsSend
-        appcode: 3cf8597ab6c94f10803e9ac4525b0ac5
-        smsSignId: 2e65b1bb3d054466b82f0c9d125465e2
-        templateId: 908e94ccf08b4476ba6c876d13f084ad
+        host: 
+        path: 
+        appcode: 
+        smsSignId: 
+        templateId: 
 
   # 服务追踪
   zipkin:
